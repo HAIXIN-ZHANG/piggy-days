@@ -1,0 +1,32 @@
+{
+  "name": "piggy-days",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --parallel --filter @piggy-days/web --filter @piggy-days/api dev",
+    "dev:web": "pnpm --filter @piggy-days/web dev",
+    "dev:api": "pnpm --filter @piggy-days/api dev",
+    "dev:scraper": "pnpm --filter @piggy-days/scraper dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "db:generate": "pnpm --filter @piggy-days/database db:generate",
+    "db:migrate": "pnpm --filter @piggy-days/database db:migrate",
+    "db:studio": "pnpm --filter @piggy-days/database db:studio",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "prettier": "^3.4.2",
+    "prisma": "^6.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

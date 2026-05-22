@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: piggy-days-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: piggy_days
+      POSTGRES_USER: piggy_days
+      POSTGRES_PASSWORD: piggy_days
+    ports:
+      - "5432:5432"
+    volumes:
+      - piggy_days_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U piggy_days -d piggy_days"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  piggy_days_postgres:

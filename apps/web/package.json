@@ -1,0 +1,26 @@
+{
+  "name": "@piggy-days/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "pnpm --filter @piggy-days/core build && pnpm --filter @piggy-days/ui build && panda codegen && next build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "panda": "panda codegen"
+  },
+  "dependencies": {
+    "@pandacss/dev": "^0.49.0",
+    "@piggy-days/core": "workspace:*",
+    "@piggy-days/ui": "workspace:*",
+    "framer-motion": "^11.15.0",
+    "lucide-react": "^0.468.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2"
+  }
+}

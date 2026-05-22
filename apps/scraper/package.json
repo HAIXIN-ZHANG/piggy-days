@@ -1,0 +1,15 @@
+{
+  "name": "@piggy-days/scraper",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --conditions development src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@piggy-days/core": "workspace:*",
+    "dotenv": "^16.4.7"
+  }
+}
