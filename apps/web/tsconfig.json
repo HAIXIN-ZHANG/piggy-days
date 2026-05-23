@@ -4,6 +4,7 @@
     "allowJs": false,
     "baseUrl": ".",
     "incremental": true,
+    "tsBuildInfoFile": ".next/cache/tsconfig.tsbuildinfo",
     "jsx": "preserve",
     "module": "ESNext",
     "moduleResolution": "Bundler",

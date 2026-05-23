@@ -11,6 +11,13 @@ Piggy Days is a private PWA for two people: tasks, check-ins, shopping deals, we
 - `packages/database`: Prisma schema and database client.
 - `packages/ui`: shared UI tokens/components for the web app.
 
+## Engineering Docs
+
+- `docs/ARCHITECTURE.md`: system boundaries, request flow, and resume-level talking points.
+- `docs/DATA_MODEL.md`: Prisma model intent and relational design.
+- `docs/API_CONTRACT.md`: protected routes, validation, and current API shapes.
+- `docs/PIGGY_FARM_GAME_DESIGN.md`: farm game loop, resources, progression, and UX direction.
+
 ## Local Setup
 
 ```bash
@@ -31,7 +38,9 @@ pnpm dev:web
 pnpm dev:api
 pnpm dev:scraper
 pnpm typecheck
+pnpm test
 pnpm build
+pnpm check
 ```
 
 The first milestone should stay local and simple: family password gate, task creation/completion, farm rewards, manual shopping items, mock deals, and mock review generation.

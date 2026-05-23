@@ -3,7 +3,11 @@ import { defineConfig } from "@pandacss/dev";
 export default defineConfig({
   preflight: true,
   jsxFramework: "react",
-  include: ["./app/**/*.{ts,tsx}", "../../packages/ui/src/**/*.{ts,tsx}"],
+  include: [
+    "./app/**/*.{ts,tsx}",
+    "./features/**/*.{ts,tsx}",
+    "../../packages/ui/src/**/*.{ts,tsx}"
+  ],
   exclude: [],
   outdir: "styled-system",
   theme: {

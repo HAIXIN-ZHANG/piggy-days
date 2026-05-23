@@ -19,7 +19,7 @@ When using multiple agents, keep ownership clear.
 Owns:
 
 - Root config
-- docs/**
+- docs/\*\*
 - package workspace setup
 - integration decisions
 - final merge
@@ -28,46 +28,46 @@ Owns:
 
 Owns:
 
-- apps/web/**
-- packages/ui/**
+- apps/web/\*\*
+- packages/ui/\*\*
 
 Does not touch:
 
-- apps/api/**
-- apps/scraper/**
+- apps/api/\*\*
+- apps/scraper/\*\*
 - Prisma schema unless asked
 
 ### Backend Agent
 
 Owns:
 
-- apps/api/**
-- packages/core/**
-- packages/database/**
+- apps/api/\*\*
+- packages/core/\*\*
+- packages/database/\*\*
 
 Does not touch:
 
-- apps/web/**
-- packages/ui/**
+- apps/web/\*\*
+- packages/ui/\*\*
 
 ### Scraper Agent
 
 Owns:
 
-- apps/scraper/**
-- packages/core/src/pricing/**
+- apps/scraper/\*\*
+- packages/core/src/pricing/\*\*
 
 Does not touch:
 
-- apps/web/**
+- apps/web/\*\*
 - apps/api UI-related routes
 
 ### Explore / AI Agent
 
 Owns:
 
-- packages/core/src/explore/**
-- packages/core/src/ai/**
+- packages/core/src/explore/\*\*
+- packages/core/src/ai/\*\*
 - apps/api explore and review modules
 
 ## First Parallelization Plan
@@ -93,7 +93,7 @@ You are responsible for Piggy Days frontend. Read docs first. Only modify apps/w
 
 ### Backend Agent
 
-You are responsible for Piggy Days backend. Read docs first. Only modify apps/api/**, packages/core/**, and packages/database/**. Use Express, TypeScript, Prisma, and PostgreSQL. Implement family password gate, tasks, check-ins, shopping lists, farm rewards, and review endpoints. Do not modify frontend UI.
+You are responsible for Piggy Days backend. Read docs first. Only modify apps/api/**, packages/core/**, and packages/database/\*\*. Use Express, TypeScript, Prisma, and PostgreSQL. Implement family password gate, tasks, check-ins, shopping lists, farm rewards, and review endpoints. Do not modify frontend UI.
 
 ### Scraper Agent
 

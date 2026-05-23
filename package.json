@@ -2,7 +2,7 @@
   "name": "piggy-days",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@9.15.4",
+  "packageManager": "pnpm@10.24.0",
   "engines": {
     "node": ">=22"
   },
@@ -16,17 +16,44 @@
     "dev:api": "pnpm --filter @piggy-days/api dev",
     "dev:scraper": "pnpm --filter @piggy-days/scraper dev",
     "build": "pnpm -r build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r --if-present test",
+    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build",
     "db:generate": "pnpm --filter @piggy-days/database db:generate",
     "db:migrate": "pnpm --filter @piggy-days/database db:migrate",
     "db:studio": "pnpm --filter @piggy-days/database db:studio",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:staged": "lint-staged"
   },
   "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@next/eslint-plugin-next": "^15.1.0",
     "@types/node": "^22.10.2",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^15.14.0",
+    "lint-staged": "^15.2.11",
     "prettier": "^3.4.2",
     "prisma": "^6.0.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.18.2"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,yml,yaml}": "prettier --write"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.13"
+    }
   }
 }

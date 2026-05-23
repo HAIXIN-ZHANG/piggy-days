@@ -9,6 +9,10 @@
 - PWA
 - Framer Motion
 - lucide-react
+- TanStack React Query
+- React Hook Form
+- date-fns
+- clsx
 
 Use PandaCSS instead of Tailwind CSS or shadcn/ui.
 
@@ -18,8 +22,31 @@ Use PandaCSS instead of Tailwind CSS or shadcn/ui.
 - TypeScript
 - Prisma
 - PostgreSQL
+- Zod
+- Helmet
+- express-rate-limit
+- pino / pino-http
 
 Use Express for v1 because it is lighter and already familiar.
+
+## Tooling
+
+- pnpm 10
+- ESLint flat config
+- Prettier
+- lint-staged
+- TypeScript strict mode
+
+Scripts:
+
+- `pnpm lint`
+- `pnpm lint:fix`
+- `pnpm format`
+- `pnpm format:check`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm build`
+- `pnpm check`
 
 ## Database
 
