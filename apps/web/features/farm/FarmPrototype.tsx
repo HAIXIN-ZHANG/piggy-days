@@ -10,7 +10,7 @@ export function FarmPrototype() {
   const farm = useFarmPrototype();
 
   return (
-    <main className="appShell">
+    <>
       <FarmHeader feed={farm.feed} seeds={farm.seeds} coins={farm.coins} />
 
       <section className="farmLayout">
@@ -38,6 +38,6 @@ export function FarmPrototype() {
         unlockedDecorations={farm.unlockedDecorations}
         level={farm.level}
       />
-    </main>
+    </>
   );
 }

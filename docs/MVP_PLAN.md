@@ -2,125 +2,216 @@
 
 ## Goal
 
-Build the smallest useful version of Piggy Days that we can actually use at home.
+Build the smallest useful version of Piggy Days that we can actually use at home:
 
-## MVP Screens
+> a bilingual two-person todo/checklist app where completed real-life actions earn Piggy Coins, grow a shared Piggy Fund, and become weekly memories.
 
-### Farm
+## MVP Shape
 
-- Shows two piggies.
-- Shows Feed, Seeds, and Coins.
-- Shows recent rewards.
-- Shows a small memory wall.
-- Shows simple piggy mood and dialogue.
-- Allows feeding when Feed is available.
-- Allows planting a simple flower or sprout when Seeds are available.
-- Shows a first set of unlockable decorations.
+The MVP should feel like a real app before it becomes a rich game.
 
-### Tasks
+## Iteration Style
 
-- Create task.
-- List todo and completed tasks.
-- Mark task as completed.
-- Add check-in note, optional cost, optional photo placeholder.
-- Reward the farm after completion.
+Build small user-testable slices. A slice should usually change one main behavior, one route, or one workflow. After each user-facing slice, run it locally and let wife test the realistic scenario before expanding scope.
 
-### Shop
+Use `docs/UX_TESTING_GUIDE.md` for slice definition, wife-test prompts, and feature-specific UX notes.
 
-- Create shopping list.
-- Add item manually.
-- Search cached products.
-- Browse deals.
-- Add deal to list.
-- Show estimated total.
-- Show Coles / Woolworths / ALDI comparison.
+Feature exposure should follow maturity:
 
-### Explore
+```txt
+planned -> route-only -> prototype -> beta -> active
+```
 
-- Enter area, budget, and mood.
-- Generate a lightweight outing plan.
-- Show place candidates with rating, review count, price level, and open status.
-- Create a task from the outing.
+Only `active` features belong in primary navigation. `prototype` and `beta` features can be reached from `/today`, `/settings`, or direct links while they are being tested.
 
-### Review
+### Required First Screens
 
-- Select date range.
-- Generate review from tasks, check-ins, shopping savings, and outings.
-- Save review as a memory card.
+#### App Shell
+
+- Default Simplified Chinese UI.
+- English toggle.
+- Mobile-first bottom navigation.
+- Desktop-friendly layout.
+- `/` redirects to `/today`.
+- Primary nav starts small: 今天, 任务, 基金, 小猪, 设置.
+- Kitchen can stay as a secondary/prototype entry until daily use proves it belongs in primary nav.
+
+#### Today
+
+- Quick task entry.
+- Today's todo/checklist snapshot.
+- Piggy Fund snapshot.
+- Weekly leaderboard snapshot.
+- Recent reward events.
+
+#### Tasks
+
+- Create simple tasks.
+- Create checklist tasks.
+- Assign to me, wife, or both.
+- Set custom Piggy Coin reward per task.
+- Set optional coin reward per checklist item.
+- List todo, in-progress, and completed tasks.
+- Complete task or checklist item with optional note, place, cost, and photo URL placeholder.
+
+#### Fund
+
+- Show current Piggy Fund balance.
+- Show recent coin events.
+- Show weekly leaderboard.
+- Show all-time leaderboard.
+- Support manual redemption or adjustment later.
+
+#### Settings
+
+- Pick current user: me or wife.
+- Switch language: Chinese or English.
+- Store choices locally.
+- Logout from family session later.
+
+#### Farm
+
+- Show the current farm prototype as a lightweight reward surface.
+- Show Piggy Coins/Fund and recent rewards.
+- Show memory preview.
+- Detailed feeding/planting/decorating comes later.
+
+#### Kitchen
+
+- Keep the current Piggy Kitchen prototype.
+- Later convert selected dinner plans into cooking checklist tasks.
+
+### Later Screens
+
+#### Explore
+
+- Enter what we want to do.
+- Generate a basic editable checklist from local templates.
+- Complete checklist items for Piggy Coins.
+
+#### Review
+
+- Pick a date range.
+- Summarize completed tasks, checklists, food cooked, places visited, coins earned, and leaderboard.
+- Save a review card.
+
+#### Memories
+
+- Show saved review cards.
+- Group by date range or month.
+
+#### Shop
+
+- Manual shopping list first.
+- Product/deal comparison later.
 
 ## Build Order
 
-### Phase 0: Project Foundation
+### Phase 0: Stabilize Current Work
 
-- Create docs.
-- Create monorepo.
-- Add web, api, scraper, and shared packages.
-- Add local environment setup.
+- Keep the current Farm prototype.
+- Keep the current Kitchen prototype.
+- Keep docs as the source of product truth.
+- Run `pnpm check` before treating the baseline as stable.
 
-### Phase 1: Local App Skeleton
+### Phase 1A: App Shell, Routes, and i18n
 
-- Next.js app with PandaCSS.
-- Express API.
-- Prisma schema.
-- Local PostgreSQL setup.
-- Family password gate.
+This is the next implementation step.
 
-### Phase 2: Tasks and Farm Loop
+- Add route skeleton:
+  - `/today`
+  - `/tasks`
+  - `/tasks/[id]`
+  - `/fund`
+  - `/farm`
+  - `/kitchen`
+  - `/settings`
+- Add mobile-first navigation.
+- Add page titles and basic empty states.
+- Move Farm prototype to `/farm`.
+- Move Kitchen prototype to `/kitchen`.
+- Add a lightweight local i18n dictionary:
+  - `zh-CN`
+  - `en`
+- Default to `zh-CN`.
+- Store selected language in local storage.
+- Keep user-entered content unchanged.
 
-- Task CRUD.
-- Check-in flow.
-- Reward rules.
-- Farm state updates.
-- Farm event log.
-- Simple piggy mood and dialogue.
-- Feed and plant actions.
+### Phase 1B: Data Model for Todo and Coins
 
-### Phase 3: Shopping MVP
+- Add or migrate toward:
+  - `HouseholdUser`
+  - `Task`
+  - `ChecklistItem`
+  - `CheckIn`
+  - `CoinEvent`
+- Seed two users: me and wife.
+- Add custom `coinValue` on tasks and checklist items.
+- Keep coin events immutable.
+- Derive Piggy Fund and leaderboard from coin events.
 
-- Shopping list.
-- Product and deal tables.
-- Mock retailer data.
-- Search and compare prices.
-- Estimated savings to Coins.
+### Phase 1C: Persistent Todo and Piggy Coins
 
-### Phase 4: Scraper MVP
+- Implement task create/list/detail.
+- Implement checklist item create/update/complete.
+- Implement task completion with check-in fields.
+- Award coins from completion.
+- Show Piggy Fund summary.
+- Show weekly and all-time leaderboard.
+- Add API/core tests for task completion, coin events, and leaderboard totals.
 
-- Retailer adapter interface.
-- Coles adapter.
-- Woolworths adapter.
-- ALDI adapter.
-- Unit price normalizer.
-- Daily cache job.
+### Phase 2: Explore Checklists
 
-### Phase 5: Explore and AI
+- Add local checklist templates.
+- Generate editable exploration checklists.
+- Allow user edits before starting.
+- Award coins per item or on full completion.
+- Keep Google Places and AI out of this phase.
 
-- Google Places API integration.
-- OpenAI-generated outing plan.
-- Review generation.
-- Shopping inspiration from deals.
+### Phase 3: Kitchen as Checklist
 
-### Phase 6: PWA and AWS Deployment
+- Convert selected dinner plan into an editable cooking checklist.
+- Award coins for cooking completion.
+- Persist kitchen items only when the prototype workflow feels useful.
+- Keep deterministic recommendations as the default.
 
-- PWA manifest and icons.
-- Amplify Hosting for web.
-- App Runner for API.
-- RDS PostgreSQL.
-- S3 for images.
-- Lambda and EventBridge for scraper.
+### Phase 4: Weekly Review and Memory Wall
 
-## First Development Milestone
+- Generate deterministic summary from stored tasks, checklist items, kitchen activity, explore activity, check-ins, and coin events.
+- Save `ReviewCard`.
+- Show memory cards.
+- Show review-period leaderboard.
+- Add optional small coin bonus for completing review ritual.
 
-The first usable local version should support:
+### Phase 5: Manual Shopping
 
-- Enter family password.
-- Create a task.
-- Complete task with note and cost.
-- Farm resources increase.
-- Feed piggies with earned Feed.
-- Plant one simple garden item with earned Seeds.
-- Add shopping items manually.
-- Display mock deal list.
-- Generate a mock review.
-- Save review as a memory card on the farm.
+- Add manual shopping list.
+- Track bought/unbought.
+- Track estimated prices and optional savings.
+- Convert selected savings into Piggy Coins or Piggy Fund adjustment.
+- Keep real retailer data later.
 
-No real scraper or Google Places integration is required for the first milestone.
+### Phase 6: Farm Details, External Data, AI, and Deployment
+
+- Feed, plant, decorate, outfits, and richer piggy behavior.
+- Real supermarket cache and scraper.
+- Google Places facts.
+- OpenAI-assisted review and outing explanations.
+- PWA polish and deployment.
+
+## First Useful Local Version
+
+The first useful local version should support:
+
+- Default Chinese UI and English switch.
+- Route shell with mobile navigation.
+- Current user selection.
+- Create a simple task.
+- Set the task's Piggy Coin reward.
+- Complete the task with optional check-in fields.
+- See Piggy Fund increase.
+- See weekly and all-time leaderboard update.
+- View the Farm as a lightweight reward surface.
+- View the Kitchen prototype on its own route.
+
+No real scraper, Google Places integration, OpenAI integration, detailed farm economy, or formal accounts are required.

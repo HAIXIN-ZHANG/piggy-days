@@ -2,36 +2,105 @@
 
 ## Modeling Approach
 
-Piggy Days is relational:
+Piggy Days is relational and event-led.
 
-- Tasks and check-ins are one-to-one.
-- Shopping lists have many items.
-- Retailers have many products, price snapshots, and deals.
-- Farm rewards are events linked back to tasks or reviews.
+Core facts:
+
+- Two household users are enough for v1.
+- Tasks can be simple tasks or checklist parent tasks.
+- Checklist tasks have many ordered checklist items.
+- Tasks can have optional check-ins.
+- Piggy Coin rewards are immutable ledger events.
+- Piggy Fund balance is derived from earned and redeemed coin events.
+- Leaderboards are derived from positive coin events.
 - Reviews become memory cards.
+- Farm display is a projection from coins, reviews, and later farm-specific events.
 
-The important design choice is that farm progress should be explainable. Instead of only storing `feed = 12`, Piggy Days stores events such as "Complete task: Feed +1". The summary can be derived from event history.
+The important design choice is explainability. Instead of only storing `fundBalance = 120`, store events such as `Complete cafe checklist item: Coins +5`. The app can then derive fund balance, leaderboard, review summaries, and farm visuals from the same history.
 
-## Current Prisma Models
+## Current Schema Status
 
-### `Task`
+The current Prisma schema already includes:
 
-Represents something we plan or complete.
+- `Task`
+- `CheckIn`
+- `FarmEvent`
+- `ShoppingList`
+- `ShoppingItem`
+- `Retailer`
+- `Product`
+- `PriceSnapshot`
+- `Deal`
+- `ReviewCard`
+
+This is a useful foundation, but the next implementation pass should shift the reward source of truth from `FarmEvent` to `CoinEvent`.
+
+## Next Priority Models
+
+### `HouseholdUser`
+
+V1 has two built-in users.
 
 Important fields:
 
+- `id`
+- `name`
+- `displayName`
+- `avatarLabel`
+- `sortOrder`
+- `createdAt`
+- `updatedAt`
+
+Avoid formal accounts, email login, and multiple households until much later.
+
+### `Task`
+
+Represents a simple todo or a parent checklist task.
+
+Important fields:
+
+- `id`
+- `type`: simple or checklist.
 - `title`
-- `category`
+- `category`: daily, cooking, explore, chore, date, shopping, other.
 - `description`
 - `place`
 - `plannedDate`
-- `status`
+- `status`: todo, in progress, completed.
+- `createdByUserId`
+- `assignedTo`: me, wife, or both.
+- `completedByUserId`
+- `coinValue`
 - `completedAt`
+- `createdAt`
+- `updatedAt`
 
 Relationships:
 
-- Optional `CheckIn`
-- Many `FarmEvent`
+- Optional `CheckIn`.
+- Many `ChecklistItem`.
+- Many `CoinEvent`.
+
+### `ChecklistItem`
+
+Represents one step inside an explore, cooking, date, chore, or shopping checklist.
+
+Important fields:
+
+- `id`
+- `taskId`
+- `title`
+- `description`
+- `place`
+- `sortOrder`
+- `status`
+- `completedAt`
+- `completedByUserId`
+- `coinValue`
+- `createdAt`
+- `updatedAt`
+
+Checklist items should be editable before and during the task. Completing an item can award coins immediately.
 
 ### `CheckIn`
 
@@ -39,52 +108,35 @@ Represents proof or memory after completing a task.
 
 Important fields:
 
+- `id`
+- `taskId`
+- `checklistItemId` optional later.
 - `photoUrl`
 - `note`
 - `costCents`
 - `place`
+- `createdAt`
 
 V1 can store `photoUrl` as a placeholder. S3 upload can come later.
 
-### `FarmEvent`
+### `CoinEvent`
 
-Immutable record of farm progress.
+Immutable record of earned or redeemed Piggy Coins.
 
 Important fields:
 
-- `resource`: `FEED`, `SEEDS`, or `COINS`
-- `amount`
+- `id`
+- `amount`: positive for earning, negative for redemption or correction.
 - `reason`
-- optional `taskId`
-- optional `reviewId`
+- `sourceType`: task, checklist item, kitchen, explore, review, shopping, manual adjustment.
+- `taskId`
+- `checklistItemId`
+- `reviewId`
+- `earnedByUserId`
+- `createdByUserId`
+- `createdAt`
 
-This is the core game economy ledger.
-
-### `ShoppingList` and `ShoppingItem`
-
-Represents the household shopping workflow.
-
-Important fields:
-
-- Item name.
-- Quantity.
-- Bought state.
-- Estimated price.
-- Recommended retailer.
-
-### `Retailer`, `Product`, `PriceSnapshot`, `Deal`
-
-Represents cached supermarket data.
-
-Important fields:
-
-- Retailer code: `COLES`, `WOOLWORTHS`, `ALDI`
-- Product name, brand, size.
-- Current price and unit price.
-- Historical price snapshots.
-- Deal price and validity window.
-
-The app searches local cached data instead of scraping live during user search.
+This should become the main reward ledger.
 
 ### `ReviewCard`
 
@@ -92,27 +144,125 @@ Represents a manually generated memory summary.
 
 Important fields:
 
-- Date range.
-- Summary.
-- Completed task count.
-- Places visited.
-- Money spent.
-- Estimated grocery savings.
-- Suggested next task.
+- `id`
+- `rangeStart`
+- `rangeEnd`
+- `summary`
+- `completedTaskCount`
+- `completedChecklistItemCount`
+- `placesVisited`
+- `foodCooked`
+- `moneySpentCents`
+- `piggyCoinsEarned`
+- `fundDelta`
+- `leaderboardSnapshot`
+- `thingsWorthRepeating`
+- `suggestedNextTask`
+- `createdAt`
 
-Review cards show on the farm memory wall.
+Review cards show in `/memories` later and preview on `/farm`.
 
-## Derived Farm Summary
+## Derived Values
 
-Farm summary can be derived from:
+### Piggy Fund
 
-- Sum `FarmEvent.amount` by resource.
-- Recent `FarmEvent` records.
-- XP from event/task/review rules.
-- Unlocks from level.
-- Memory cards from `ReviewCard`.
+Derived from:
 
-V1 can start with a simple computed response. If performance matters later, add a `FarmState` table as a cache.
+- Sum of all `CoinEvent.amount`.
+
+Useful summaries:
+
+- Current balance.
+- Earned all time.
+- Redeemed all time.
+- Earned this week.
+- Recent events.
+
+### Leaderboard
+
+Derived from:
+
+- Sum of positive `CoinEvent.amount` grouped by `earnedByUserId`.
+
+Rules:
+
+- Weekly leaderboard uses date range for current week.
+- All-time leaderboard uses all positive coin events.
+- Negative redemption events should not reduce earned leaderboard score.
+
+### Task Progress
+
+For checklist tasks:
+
+- Total item count.
+- Completed item count.
+- Percent complete.
+- Parent task can complete when all checklist items are complete.
+
+### Farm Summary
+
+Near-term farm summary can be derived from:
+
+- Piggy Fund balance.
+- Recent positive coin events.
+- Review cards.
+- Optional farm-specific events.
+
+Detailed farm resources such as Feed, Seeds, Hearts, plants, and decorations are later projections, not the first reward source of truth.
+
+## Kitchen Models
+
+Piggy Kitchen should start as a simple household inventory and dish library, not a strict warehouse system.
+
+Suggested models when persistence is needed:
+
+- `KitchenItem`: leftovers, fresh ingredients, pantry staples, and condiments.
+- `HomeDish`: dishes we already know how to cook.
+- `HomeDishIngredient`: required and optional ingredients for a dish.
+- `MealPlan`: saved dinner recommendation or selected dinner idea.
+
+Important `KitchenItem` fields:
+
+- `name`
+- `category`: leftover, fresh, staple, condiment.
+- `quantityLabel`
+- `servings`
+- `addedAt`
+- `expiresAt`
+- `status`: eat soon, normal, freezer, tired.
+- `notes`
+
+V1 can keep the dish library in `@piggy-days/core` until the kitchen loop feels useful enough to persist.
+
+## Shopping Models
+
+Shopping is later.
+
+Current schema already includes:
+
+- `ShoppingList`
+- `ShoppingItem`
+- `Retailer`
+- `Product`
+- `PriceSnapshot`
+- `Deal`
+
+Use these after the task/checklist/fund loop is stable.
+
+## Language Preference
+
+V1 can store selected app language in browser local storage.
+
+Default:
+
+- `zh-CN`
+
+Supported:
+
+- `zh-CN`
+- `en`
+
+Do not add account-level or cloud-synced locale settings until there is a real need. If language preference later needs to sync across devices, add it to `HouseholdSettings` rather than adding formal user accounts.
 
 ## Future Tables
 
@@ -122,11 +272,11 @@ Add only when needed:
 - `FarmDecoration`: unlocked and placed decorations.
 - `FarmPlant`: planted seeds and growth stage.
 - `Quest`: suggested tasks generated from reviews or weekly themes.
-- `HouseholdSettings`: family password hash and selected farm theme.
+- `HouseholdSettings`: family password hash, selected farm theme, later shared locale.
 
 ## Money
 
-Store all money as integer cents:
+Store money as integer cents:
 
 - `costCents`
 - `estimatedPriceCents`
@@ -135,6 +285,8 @@ Store all money as integer cents:
 - `grocerySavingsCents`
 
 This avoids floating-point rounding issues.
+
+Piggy Coins are separate integer units, not cents.
 
 ## Privacy
 

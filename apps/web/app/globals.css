@@ -910,6 +910,620 @@ h1 {
   opacity: 0.46;
 }
 
+.kitchenModule {
+  margin-top: 34px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(120, 82, 61, 0.18);
+}
+
+.kitchenHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 430px;
+  gap: 22px;
+  align-items: stretch;
+  margin-bottom: 18px;
+}
+
+.kitchenHeroText {
+  display: grid;
+  align-content: center;
+  min-height: 330px;
+}
+
+.kitchenHeroText h2 {
+  max-width: 760px;
+  margin-bottom: 14px;
+  font-size: clamp(2.35rem, 5.8vw, 4.7rem);
+  line-height: 0.94;
+  letter-spacing: 0;
+}
+
+.kitchenHeroText p:last-child {
+  max-width: 660px;
+  margin-bottom: 0;
+  color: #625852;
+  font-size: 1.03rem;
+  line-height: 1.65;
+}
+
+.kitchenScene {
+  position: relative;
+  min-height: 330px;
+  overflow: hidden;
+  border: 1px solid #d9cabd;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.48), transparent 44%),
+    radial-gradient(circle at 82% 18%, rgba(230, 169, 63, 0.24), transparent 9rem),
+    linear-gradient(180deg, #d9edf5 0%, #f5efe4 62%, #d6a36a 62%, #bf7f49 100%);
+  box-shadow: 0 24px 70px rgba(73, 48, 34, 0.12);
+}
+
+.fridgeBlock {
+  position: absolute;
+  left: 28px;
+  bottom: 64px;
+  width: 104px;
+  height: 205px;
+  border: 4px solid #6f8ba4;
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.7), transparent 26%),
+    linear-gradient(180deg, #f4fbff 0 45%, #d5eaf5 45%);
+  box-shadow: 0 18px 34px rgba(55, 83, 104, 0.15);
+}
+
+.fridgeHandle {
+  position: absolute;
+  right: 14px;
+  top: 66px;
+  width: 8px;
+  height: 54px;
+  border-radius: 999px;
+  background: #6f8ba4;
+}
+
+.fridgeNote {
+  position: absolute;
+  left: 12px;
+  top: 18px;
+  padding: 5px 7px;
+  border-radius: 6px;
+  background: #f2bf55;
+  color: #5d4325;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.counterBlock {
+  position: absolute;
+  left: 114px;
+  right: 24px;
+  bottom: 54px;
+  height: 92px;
+  border: 4px solid #7f573e;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #f1c57a 0 18px, #a86f45 18px);
+}
+
+.counterBlock::before {
+  content: "";
+  position: absolute;
+  inset: 18px 16px auto;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.cuttingBoard {
+  position: absolute;
+  left: 26px;
+  top: -34px;
+  width: 86px;
+  height: 46px;
+  border-radius: 8px;
+  background: #e4b772;
+  box-shadow: inset 0 0 0 3px rgba(113, 78, 42, 0.2);
+}
+
+.sauceBottle {
+  position: absolute;
+  right: 32px;
+  top: -54px;
+  width: 28px;
+  height: 62px;
+  border-radius: 10px 10px 7px 7px;
+  background: linear-gradient(180deg, #643a34 0 24%, #c8556f 24%);
+  box-shadow: 0 12px 20px rgba(73, 48, 34, 0.12);
+}
+
+.tinyBowl {
+  position: absolute;
+  top: -22px;
+  width: 50px;
+  height: 25px;
+  border-radius: 6px 6px 28px 28px;
+  border: 3px solid #7f573e;
+  background: #fff9f2;
+}
+
+.bowlOne {
+  left: 126px;
+}
+
+.bowlTwo {
+  left: 184px;
+  background: #d9eef7;
+}
+
+.steamPot {
+  position: absolute;
+  right: 116px;
+  bottom: 130px;
+  width: 106px;
+  height: 76px;
+  border: 4px solid #4f453f;
+  border-radius: 12px 12px 30px 30px;
+  background: linear-gradient(180deg, #6b9ac4, #4f789c);
+  box-shadow: 0 20px 34px rgba(55, 83, 104, 0.18);
+}
+
+.potLid {
+  position: absolute;
+  left: 14px;
+  top: -20px;
+  width: 70px;
+  height: 22px;
+  border: 4px solid #4f453f;
+  border-radius: 24px 24px 6px 6px;
+  background: #9bbbd3;
+}
+
+.steam {
+  position: absolute;
+  top: -62px;
+  width: 18px;
+  height: 48px;
+  border-radius: 999px;
+  border-left: 4px solid rgba(255, 255, 255, 0.76);
+  animation: steamLift 2.4s ease-in-out infinite;
+}
+
+.steamOne {
+  left: 28px;
+}
+
+.steamTwo {
+  left: 58px;
+  animation-delay: 0.8s;
+}
+
+.tonightTicket {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  width: min(260px, calc(100% - 44px));
+  padding: 16px;
+  border: 1px solid rgba(120, 82, 61, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 16px 36px rgba(73, 48, 34, 0.12);
+}
+
+.tonightTicket span,
+.miniLabel,
+.planTitle,
+.segmentedControl > span,
+.peopleStepper > span,
+.avoidInput span {
+  color: #756c65;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.tonightTicket strong {
+  display: block;
+  margin: 8px 0;
+  font-size: 1.22rem;
+  line-height: 1.15;
+}
+
+.tonightTicket p {
+  margin-bottom: 0;
+  color: #625852;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.kitchenGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.kitchenInventory,
+.kitchenPlanner,
+.recommendationBand,
+.shoppingGap,
+.dishLibrary {
+  border: 1px solid #eadfd4;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 16px 44px rgba(73, 48, 34, 0.07);
+}
+
+.kitchenInventory,
+.kitchenPlanner,
+.recommendationBand,
+.dishLibrary {
+  padding: 18px;
+}
+
+.kitchenAddForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.kitchenAddForm input,
+.avoidInput input {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #eadfd4;
+  border-radius: 8px;
+  background: rgba(255, 249, 242, 0.84);
+  color: #2f2926;
+  font: inherit;
+  font-size: 0.92rem;
+}
+
+.kitchenAddForm input {
+  padding: 0 13px;
+}
+
+.avoidInput input {
+  margin-top: 8px;
+  padding: 0 12px;
+}
+
+.kitchenAddForm button,
+.quickAddRow button,
+.mustUseButton,
+.dishCard button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 12px;
+  background: #2f2926;
+  color: #fff9f2;
+  font-size: 0.88rem;
+  font-weight: 850;
+}
+
+.quickAddRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.quickAddRow button {
+  min-height: 36px;
+  background: #f1e2d1;
+  color: #4f453f;
+}
+
+.inventoryList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.inventoryItem {
+  display: grid;
+  gap: 10px;
+  min-height: 154px;
+  padding: 13px;
+  border: 1px solid #eadfd4;
+  border-radius: 8px;
+  background: rgba(255, 249, 242, 0.74);
+}
+
+.inventoryTopLine {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+}
+
+.inventoryTopLine strong,
+.inventoryTopLine span {
+  display: block;
+}
+
+.inventoryTopLine strong {
+  margin-bottom: 3px;
+  font-size: 0.98rem;
+}
+
+.inventoryTopLine span,
+.inventoryMeta span,
+.dishMeta span {
+  color: #756c65;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.iconOnlyButton {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(200, 85, 111, 0.18);
+  background: rgba(255, 255, 255, 0.62);
+  color: #9a4a58;
+}
+
+.inventoryMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.inventoryMeta span {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.statusDot {
+  color: #4f8f65;
+}
+
+.status-eat_soon {
+  color: #c8556f;
+}
+
+.status-freezer {
+  color: #547fa6;
+}
+
+.status-tired {
+  color: #8b786b;
+}
+
+.mustUseButton {
+  width: 100%;
+  align-self: end;
+  min-height: 38px;
+  background: rgba(47, 41, 38, 0.08);
+  color: #4f453f;
+}
+
+.mustUseButton.selected {
+  background: #4f8f65;
+  color: white;
+}
+
+.mealControlStack {
+  display: grid;
+  gap: 13px;
+}
+
+.peopleStepper,
+.segmentedControl {
+  display: grid;
+  gap: 8px;
+}
+
+.peopleStepper > span {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.peopleStepper > div,
+.segmentedControl > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.peopleStepper button,
+.segmentedControl button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #eadfd4;
+  background: rgba(255, 249, 242, 0.82);
+  color: #4f453f;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.peopleStepper button.selected,
+.segmentedControl button.selected {
+  border-color: rgba(200, 85, 111, 0.42);
+  background: #c8556f;
+  color: #fff;
+}
+
+.recommendationBand {
+  margin-top: 18px;
+}
+
+.planGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.planCard {
+  display: grid;
+  gap: 12px;
+  min-height: 280px;
+  padding: 16px;
+  border: 1px solid #eadfd4;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(107, 154, 196, 0.09), transparent 46%), rgba(255, 249, 242, 0.78);
+  color: #2f2926;
+  text-align: left;
+  box-shadow: none;
+}
+
+.planCard.selected {
+  border-color: rgba(200, 85, 111, 0.54);
+  box-shadow: 0 0 0 3px rgba(200, 85, 111, 0.1);
+}
+
+.planCard strong {
+  font-size: 1.28rem;
+  line-height: 1.16;
+}
+
+.planCard p {
+  margin-bottom: 0;
+  color: #625852;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.planFacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.planFacts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #4f453f;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.planUseGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  align-self: end;
+}
+
+.planUseGrid div {
+  min-height: 68px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.planUseGrid span {
+  display: block;
+  margin-bottom: 4px;
+  color: #756c65;
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.shoppingGap {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  margin-top: 18px;
+  padding: 18px;
+  background:
+    linear-gradient(90deg, rgba(79, 143, 101, 0.11), transparent 58%), rgba(255, 255, 255, 0.7);
+}
+
+.shoppingGap h2 {
+  margin-bottom: 0;
+  font-size: 1.45rem;
+}
+
+.shoppingGapList {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(255, 249, 242, 0.78);
+}
+
+.shoppingGapList p {
+  margin-bottom: 0;
+  color: #4f453f;
+  font-weight: 760;
+  line-height: 1.45;
+}
+
+.dishLibrary {
+  margin-top: 18px;
+}
+
+.dishGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dishCard {
+  display: grid;
+  gap: 12px;
+  min-height: 224px;
+  padding: 14px;
+  border: 1px solid #eadfd4;
+  border-radius: 8px;
+  background: rgba(255, 249, 242, 0.74);
+}
+
+.readinessBadge {
+  display: inline-flex;
+  margin-bottom: 10px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(200, 85, 111, 0.1);
+  color: #c8556f;
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.readinessBadge.ready {
+  background: rgba(79, 143, 101, 0.12);
+  color: #4f8f65;
+}
+
+.dishCard h3 {
+  margin-bottom: 6px;
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.dishCard p {
+  margin-bottom: 0;
+  color: #756c65;
+  font-size: 0.84rem;
+}
+
+.dishMeta {
+  display: grid;
+  gap: 6px;
+  align-self: end;
+}
+
+.dishCard button {
+  align-self: end;
+  background: #6b9ac4;
+}
+
 @keyframes piggyIdle {
   0%,
   100% {
@@ -932,10 +1546,26 @@ h1 {
   }
 }
 
+@keyframes steamLift {
+  0%,
+  100% {
+    opacity: 0.44;
+    translate: 0 0;
+  }
+
+  50% {
+    opacity: 0.9;
+    translate: 0 -7px;
+  }
+}
+
 @media (max-width: 980px) {
   .farmHeader,
   .farmLayout,
-  .belowFarm {
+  .belowFarm,
+  .kitchenHero,
+  .kitchenGrid,
+  .shoppingGap {
     grid-template-columns: 1fr;
   }
 
@@ -945,6 +1575,15 @@ h1 {
 
   .farmScene {
     min-height: 500px;
+  }
+
+  .kitchenHeroText {
+    min-height: auto;
+  }
+
+  .planGrid,
+  .dishGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1023,6 +1662,51 @@ h1 {
   }
 
   .actionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kitchenHeroText h2 {
+    font-size: 2.7rem;
+  }
+
+  .kitchenScene {
+    min-height: 300px;
+  }
+
+  .fridgeBlock {
+    left: 18px;
+    bottom: 52px;
+    transform: scale(0.78);
+    transform-origin: bottom left;
+  }
+
+  .counterBlock {
+    left: 82px;
+    right: 14px;
+    bottom: 42px;
+  }
+
+  .steamPot {
+    right: 54px;
+    bottom: 118px;
+    transform: scale(0.78);
+    transform-origin: bottom right;
+  }
+
+  .tonightTicket {
+    left: 16px;
+    right: 16px;
+    top: 16px;
+    width: auto;
+  }
+
+  .inventoryList,
+  .planGrid,
+  .dishGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kitchenAddForm {
     grid-template-columns: 1fr;
   }
 }

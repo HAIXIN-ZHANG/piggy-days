@@ -18,6 +18,25 @@ x-family-token: <FAMILY_API_TOKEN>
 
 If `FAMILY_API_TOKEN` is not configured locally, protected routes can run without the header during early development.
 
+Future login route:
+
+```txt
+POST /api/auth/family-login
+```
+
+V1 should not add formal accounts.
+
+## Locale
+
+UI language is frontend-owned in v1.
+
+- Default: `zh-CN`.
+- Supported: `zh-CN`, `en`.
+- Store selected locale in local storage.
+- Do not auto-translate user-entered content.
+
+The API can accept an optional `Accept-Language` or `x-locale` later for generated system text, but it is not required for the first persistence milestone.
+
 ## Response Shape
 
 Successful responses return JSON objects directly.
@@ -39,6 +58,17 @@ Validation errors use:
 }
 ```
 
+List endpoints that can grow should use cursor pagination:
+
+```json
+{
+  "items": [],
+  "nextCursor": null
+}
+```
+
+For early endpoints that already return named arrays, keep stable shapes such as `{ "tasks": [] }` until the API is migrated deliberately.
+
 ## Health
 
 ### `GET /health`
@@ -52,61 +82,90 @@ Returns:
 }
 ```
 
-## Farm
+## Auth Planned
 
-### `GET /api/farm/summary`
-
-Protected.
-
-Returns the current farm resources, XP, level, and recent events.
-
-Current prototype response:
-
-```json
-{
-  "feed": 0,
-  "seeds": 0,
-  "coins": 0,
-  "xp": 0,
-  "level": 1,
-  "recentRewards": []
-}
-```
-
-### `POST /api/farm/actions/feed`
-
-Protected.
+### `POST /api/auth/family-login`
 
 Body:
 
 ```json
 {
-  "piggyName": "Momo"
+  "password": "family password"
 }
 ```
 
-Returns a prototype action result:
+Returns:
 
 ```json
 {
-  "ok": true,
-  "action": "feed",
-  "piggyName": "Momo",
-  "dialogue": "Snack time. The farm feels a little softer."
+  "token": "family-session-token"
+}
+```
+
+## People Planned
+
+V1 has two built-in household users.
+
+### `GET /api/people`
+
+Protected.
+
+Returns:
+
+```json
+{
+  "people": [
+    {
+      "id": "me",
+      "displayName": "我",
+      "avatarLabel": "我"
+    },
+    {
+      "id": "wife",
+      "displayName": "老婆",
+      "avatarLabel": "她"
+    }
+  ]
 }
 ```
 
 ## Tasks
 
+The current route is prototype-only. The next implementation pass should persist tasks and coin events.
+
 ### `GET /api/tasks`
 
 Protected.
 
-Returns tasks. The current route returns an empty list until persistence is connected.
+Query options:
+
+```txt
+status=todo|in_progress|completed|all
+assignedTo=me|wife|both
+category=daily|cooking|explore|chore|date|shopping|other
+limit=30
+cursor=<cursor>
+```
+
+Returns:
 
 ```json
 {
-  "tasks": []
+  "tasks": [
+    {
+      "id": "task_123",
+      "type": "simple",
+      "title": "倒垃圾",
+      "category": "chore",
+      "status": "todo",
+      "assignedTo": "me",
+      "coinValue": 5,
+      "plannedDate": "2026-06-01T10:00:00.000Z",
+      "createdAt": "2026-05-31T10:00:00.000Z",
+      "updatedAt": "2026-05-31T10:00:00.000Z"
+    }
+  ],
+  "nextCursor": null
 }
 ```
 
@@ -118,26 +177,73 @@ Body:
 
 ```json
 {
-  "title": "Buy milk",
-  "category": "shopping",
-  "description": "Check Coles and Woolworths",
-  "place": "Carousel",
-  "plannedDate": "2026-05-24T10:00:00.000Z"
+  "type": "simple",
+  "title": "倒垃圾",
+  "category": "chore",
+  "description": "晚上出门前顺手做",
+  "place": "Home",
+  "plannedDate": "2026-06-01T10:00:00.000Z",
+  "createdByUserId": "me",
+  "assignedTo": "me",
+  "coinValue": 5
 }
 ```
 
 Required:
 
 - `title`
+- `createdByUserId`
+- `assignedTo`
+- `coinValue`
 
 Optional:
 
+- `type`
 - `category`
 - `description`
 - `place`
 - `plannedDate`
 
-Returns a created task shape.
+Returns:
+
+```json
+{
+  "task": {
+    "id": "task_123",
+    "type": "simple",
+    "title": "倒垃圾",
+    "status": "todo",
+    "coinValue": 5
+  }
+}
+```
+
+### `GET /api/tasks/:taskId`
+
+Protected.
+
+Returns task detail and checklist items:
+
+```json
+{
+  "task": {
+    "id": "task_123",
+    "type": "checklist",
+    "title": "周末探店",
+    "status": "in_progress",
+    "coinValue": 10
+  },
+  "checklistItems": [
+    {
+      "id": "item_1",
+      "title": "选一家店",
+      "status": "completed",
+      "coinValue": 2,
+      "sortOrder": 1
+    }
+  ]
+}
+```
 
 ### `POST /api/tasks/:taskId/complete`
 
@@ -147,36 +253,262 @@ Body:
 
 ```json
 {
-  "note": "Done after lunch",
-  "costCents": 1250,
-  "place": "Carousel",
-  "photoUrl": "https://example.com/photo.jpg",
-  "isCityOuting": false,
-  "grocerySavingsCents": 500
+  "completedByUserId": "me",
+  "note": "Done after dinner",
+  "costCents": 0,
+  "place": "Home",
+  "photoUrl": "https://example.com/photo.jpg"
 }
 ```
 
-Returns reward calculation:
+Returns:
 
 ```json
 {
-  "taskId": "task_123",
-  "status": "completed",
-  "farm": {
-    "xp": 15,
-    "rewards": [
-      {
-        "resource": "feed",
-        "amount": 1,
-        "reason": "Complete task"
-      }
-    ]
+  "task": {
+    "id": "task_123",
+    "status": "completed",
+    "completedAt": "2026-05-31T10:00:00.000Z"
+  },
+  "checkIn": {
+    "note": "Done after dinner",
+    "costCents": 0,
+    "place": "Home",
+    "photoUrl": "https://example.com/photo.jpg"
+  },
+  "coinEvent": {
+    "id": "coin_123",
+    "amount": 5,
+    "reason": "Complete task",
+    "sourceType": "task",
+    "earnedByUserId": "me"
   }
 }
 ```
 
+## Checklist Items Planned
+
+### `POST /api/tasks/:taskId/checklist-items`
+
+Protected.
+
+Body:
+
+```json
+{
+  "title": "拍一张照片",
+  "description": "留作周末回忆",
+  "place": "Kings Park",
+  "coinValue": 3,
+  "sortOrder": 2
+}
+```
+
+### `PATCH /api/checklist-items/:itemId`
+
+Protected.
+
+Updates title, description, place, sort order, status, or coin value.
+
+### `POST /api/checklist-items/:itemId/complete`
+
+Protected.
+
+Body:
+
+```json
+{
+  "completedByUserId": "wife",
+  "note": "照片很好看"
+}
+```
+
+Returns completed item and created `CoinEvent`.
+
+## Fund and Coins Planned
+
+### `GET /api/fund/summary`
+
+Protected.
+
+Returns:
+
+```json
+{
+  "balance": 42,
+  "earnedAllTime": 80,
+  "redeemedAllTime": 38,
+  "recentEvents": [
+    {
+      "id": "coin_123",
+      "amount": 5,
+      "reason": "Complete task",
+      "sourceType": "task",
+      "earnedByUserId": "me",
+      "createdAt": "2026-05-31T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+### `GET /api/coins/events`
+
+Protected.
+
+Query options:
+
+```txt
+limit=30
+cursor=<cursor>
+sourceType=task|checklist_item|kitchen|explore|review|shopping|manual
+userId=me|wife
+```
+
+### `POST /api/coins/adjustments`
+
+Protected.
+
+For manual fund adjustments or redemptions.
+
+Body:
+
+```json
+{
+  "amount": -20,
+  "reason": "兑换周末小奖励",
+  "createdByUserId": "me"
+}
+```
+
+## Leaderboard Planned
+
+### `GET /api/leaderboard`
+
+Protected.
+
+Query options:
+
+```txt
+range=week|month|all
+```
+
+Returns:
+
+```json
+{
+  "range": "week",
+  "leaders": [
+    {
+      "userId": "me",
+      "displayName": "我",
+      "earnedCoins": 18
+    },
+    {
+      "userId": "wife",
+      "displayName": "老婆",
+      "earnedCoins": 15
+    }
+  ]
+}
+```
+
+## Explore Planned
+
+V1 Explore should use local templates, not Google Places or AI.
+
+### `POST /api/explore/checklist-template`
+
+Protected.
+
+Body:
+
+```json
+{
+  "intent": "try_cafe",
+  "area": "Fremantle",
+  "mood": "relaxed",
+  "budgetCents": 5000,
+  "createdByUserId": "me",
+  "assignedTo": "both"
+}
+```
+
+Returns an editable checklist draft. The user can save it as a task.
+
+## Kitchen
+
+Kitchen routes can remain mock/local until the workflow proves useful.
+
+### `GET /api/kitchen/items`
+
+Protected.
+
+Returns fridge, leftovers, pantry staples, and condiments.
+
+### `POST /api/kitchen/items`
+
+Protected.
+
+Creates a manual kitchen item.
+
+### `POST /api/kitchen/recommendations`
+
+Protected.
+
+Returns 2-3 deterministic dinner plans from current items and the home dish library.
+
+### `POST /api/kitchen/plans/:planId/create-task`
+
+Protected. Planned.
+
+Turns a selected dinner plan into a cooking checklist task.
+
+## Reviews Planned
+
+### `POST /api/reviews/generate`
+
+Protected.
+
+Body:
+
+```json
+{
+  "rangeStart": "2026-05-25T00:00:00.000Z",
+  "rangeEnd": "2026-05-31T23:59:59.999Z"
+}
+```
+
+Returns and saves a `ReviewCard` generated from tasks, checklist items, check-ins, coin events, kitchen tasks, and explore tasks.
+
+## Farm
+
+Farm is a projection in the next product direction, not the source of truth for rewards.
+
+### `GET /api/farm/summary`
+
+Protected.
+
+Current prototype returns `defaultFarmState`.
+
+Future response should derive from coin events, review cards, and optional farm-specific events:
+
+```json
+{
+  "fundBalance": 42,
+  "recentRewards": [],
+  "memoryCards": [],
+  "piggies": [],
+  "dialogue": "今天也有小小进展。"
+}
+```
+
+### `POST /api/farm/actions/feed`
+
+Prototype-only. Detailed farm actions come after the task/checklist/fund loop is useful.
+
 ## Implementation Notes
 
-- Request validation is done with Zod in API route modules.
-- Farm reward rules live in `@piggy-days/core`, not inside route handlers.
-- Persistence is the next milestone after the route contract is stable.
+- Request validation is done with Zod in route modules.
+- Coin/reward rules live in `@piggy-days/core`, not inside route handlers.
+- Piggy Fund and leaderboard are derived from immutable coin events.
+- Shopping, Google Places, OpenAI, and detailed farm gameplay are later modules.
