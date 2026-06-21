@@ -102,7 +102,7 @@ Returns:
 }
 ```
 
-## People Planned
+## People
 
 V1 has two built-in household users.
 
@@ -131,7 +131,7 @@ Returns:
 
 ## Tasks
 
-The current route is prototype-only. The next implementation pass should persist tasks and coin events.
+Simple task creation, listing, detail, and completion are active. Checklist item persistence is planned.
 
 ### `GET /api/tasks`
 
@@ -222,17 +222,27 @@ Returns:
 
 Protected.
 
-Returns task detail and checklist items:
+Returns task detail, check-in, related coin events, and an empty checklist item list until `ChecklistItem` is implemented:
 
 ```json
 {
   "task": {
     "id": "task_123",
-    "type": "checklist",
-    "title": "Weekend cafe visit",
-    "status": "in_progress",
-    "coinValue": 10
+    "type": "simple",
+    "title": "Take out trash",
+    "status": "todo",
+    "coinValue": 5
   },
+  "checkIn": null,
+  "coinEvents": [],
+  "checklistItems": []
+}
+```
+
+Later checklist task detail can return:
+
+```json
+{
   "checklistItems": [
     {
       "id": "item_1",
@@ -325,7 +335,9 @@ Body:
 
 Returns completed item and created `CoinEvent`.
 
-## Fund and Coins Planned
+## Fund and Coins
+
+Fund summary and coin event listing are active. Manual adjustments are planned.
 
 ### `GET /api/fund/summary`
 
@@ -338,6 +350,7 @@ Returns:
   "balance": 42,
   "earnedAllTime": 80,
   "redeemedAllTime": 38,
+  "earnedThisWeek": 12,
   "recentEvents": [
     {
       "id": "coin_123",
@@ -364,6 +377,26 @@ sourceType=task|checklist_item|kitchen|explore|review|shopping|manual
 userId=me|wife
 ```
 
+Returns:
+
+```json
+{
+  "items": [
+    {
+      "id": "coin_123",
+      "amount": 5,
+      "reason": "Complete task: Take out trash",
+      "sourceType": "task",
+      "taskId": "task_123",
+      "earnedByUserId": "me",
+      "createdByUserId": "me",
+      "createdAt": "2026-05-31T10:00:00.000Z"
+    }
+  ],
+  "nextCursor": null
+}
+```
+
 ### `POST /api/coins/adjustments`
 
 Protected.
@@ -380,7 +413,7 @@ Body:
 }
 ```
 
-## Leaderboard Planned
+## Leaderboard
 
 ### `GET /api/leaderboard`
 
@@ -389,7 +422,7 @@ Protected.
 Query options:
 
 ```txt
-range=week|month|all
+range=week|all
 ```
 
 Returns:
@@ -488,9 +521,7 @@ Farm is a projection in the next product direction, not the source of truth for 
 
 Protected.
 
-Current prototype returns `defaultFarmState`.
-
-Future response should derive from coin events, review cards, and optional farm-specific events:
+Current response is a lightweight projection from coin events. The rich `/farm` frontend prototype still keeps local visual resources and should not be treated as the reward source of truth.
 
 ```json
 {

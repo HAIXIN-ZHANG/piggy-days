@@ -109,16 +109,16 @@ Only `active` features belong in primary navigation. `prototype` and `beta` feat
 
 ### Phase 0: Stabilize Current Work
 
-- Keep the current Farm prototype.
-- Keep the current Kitchen prototype.
-- Keep docs as the source of product truth.
-- Run `pnpm check` before treating the baseline as stable.
+- [x] Keep the current Farm prototype.
+- [x] Keep the current Kitchen prototype.
+- [x] Keep docs as the source of product truth.
+- [x] Run `pnpm check` before treating the baseline as stable.
 
 ### Phase 1A: App Shell, Routes, and i18n
 
-This is the next implementation step.
+Status: completed.
 
-- Add route skeleton:
+- [x] Add route skeleton:
   - `/today`
   - `/tasks`
   - `/tasks/[id]`
@@ -126,39 +126,42 @@ This is the next implementation step.
   - `/farm`
   - `/kitchen`
   - `/settings`
-- Add mobile-first navigation.
-- Add page titles and basic empty states.
-- Move Farm prototype to `/farm`.
-- Move Kitchen prototype to `/kitchen`.
-- Add a lightweight local i18n dictionary:
+- [x] Add mobile-first navigation.
+- [x] Add page titles and basic empty states.
+- [x] Move Farm prototype to `/farm`.
+- [x] Move Kitchen prototype to `/kitchen`.
+- [x] Add a lightweight local i18n dictionary:
   - `zh-CN`
   - `en`
-- Default to `zh-CN`.
-- Store selected language in local storage.
-- Keep user-entered content unchanged.
+- [x] Default to `zh-CN`.
+- [x] Store selected language in local storage.
+- [x] Keep user-entered content unchanged.
 
 ### Phase 1B: Data Model for Todo and Coins
 
-- Add or migrate toward:
-  - `HouseholdUser`
-  - `Task`
-  - `ChecklistItem`
-  - `CheckIn`
-  - `CoinEvent`
-- Seed two users: me and wife.
-- Add custom `coinValue` on tasks and checklist items.
-- Keep coin events immutable.
-- Derive Piggy Fund and leaderboard from coin events.
+- [x] Add `HouseholdUser`.
+- [x] Extend `Task` for simple-task ownership, assignment, completion, and `coinValue`.
+- [x] Keep `CheckIn` for task completion details.
+- [x] Add `CoinEvent`.
+- [x] Seed/upsert two users: me and wife.
+- [x] Add custom `coinValue` on simple tasks.
+- [x] Keep coin events immutable.
+- [x] Derive Piggy Fund and leaderboard from coin events.
+- [ ] Add `ChecklistItem`.
+- [ ] Add custom `coinValue` on checklist items.
 
 ### Phase 1C: Persistent Todo and Piggy Coins
 
-- Implement task create/list/detail.
-- Implement checklist item create/update/complete.
-- Implement task completion with check-in fields.
-- Award coins from completion.
-- Show Piggy Fund summary.
-- Show weekly and all-time leaderboard.
-- Add API/core tests for task completion, coin events, and leaderboard totals.
+- [x] Implement simple task create/list/detail.
+- [x] Implement simple task completion with check-in fields.
+- [x] Award coins from simple task completion.
+- [x] Show Piggy Fund summary.
+- [x] Show weekly and all-time leaderboard.
+- [x] Add core tests for task completion, coin events, fund summary, and leaderboard totals.
+- [x] Browser-verify create task -> complete task -> CoinEvent -> fund -> leaderboard -> today.
+- [ ] Add focused API tests for create task, complete task, fund summary, and leaderboard.
+- [ ] Implement checklist item create/update/complete.
+- [ ] Award coins from checklist item completion.
 
 ### Phase 2: Explore Checklists
 

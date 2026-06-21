@@ -63,7 +63,7 @@ V1 farm should not require:
 - Walkable map.
 - Multiplayer sync.
 
-The current farm prototype can remain as a visual prototype, but the next real reward source of truth should be `CoinEvent`.
+The current farm prototype can remain as a visual prototype, but the real reward source of truth is now `CoinEvent`.
 
 ## Core Fantasy
 

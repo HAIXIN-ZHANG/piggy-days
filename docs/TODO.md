@@ -1,6 +1,6 @@
 # Piggy Days TODO Roadmap
 
-Status date: 2026-05-31
+Status date: 2026-06-21
 
 This is the active roadmap. It intentionally keeps the next work small and ordered.
 
@@ -59,16 +59,22 @@ App shell and routes -> Todo/checklist -> Piggy Coins/Fund -> Explore checklists
 - Piggy Kitchen prototype with local inventory, quick-add items, dinner settings, deterministic recommendations, shopping gap output, and dish library.
 - Kitchen recommendation helpers in `@piggy-days/core`.
 - App shell routes for `/today`, `/tasks`, `/tasks/[id]`, `/fund`, `/farm`, `/kitchen`, and `/settings`.
-- Chinese-first navigation, route empty states, local language setting, and current-user setting.
+- Chinese-first navigation, local language setting, and current-user setting.
+- Persistent simple task creation, list, detail, and completion flow.
+- `HouseholdUser` and `CoinEvent` models.
+- `Task` fields for type, assignment, creator, completer, and `coinValue`.
+- `CoinEvent` is the source of truth for Piggy Fund and leaderboards.
+- `/today` and `/fund` show real task, fund, reward, and leaderboard data.
+- API endpoints for people, simple tasks, task completion, fund summary, coin events, and leaderboard.
 - Tooling baseline: TypeScript, ESLint, Prettier, tests, build scripts, Prisma scripts, and `pnpm check`.
 
 ### Scaffolded but Not Real Yet
 
-- Tasks API returns mock/in-memory shapes.
-- Farm API returns default state and does not derive from real events.
+- Checklist item persistence is not implemented yet.
+- Checklist item completion does not create `CoinEvent` yet.
+- Manual coin adjustments/redemptions are not implemented yet.
 - Farm and Kitchen frontend state is local only.
-- Todo and Fund routes exist, but they are warm empty states without real data yet.
-- No `HouseholdUser`, `ChecklistItem`, or `CoinEvent` models yet.
+- Farm API has a lightweight CoinEvent projection, but the rich farm prototype still keeps its own local resources.
 - No family password screen yet.
 
 ### Complexity Parking Lot
@@ -91,9 +97,9 @@ Do not let these block the first useful version:
 
 Goal: preserve the current prototype and docs baseline.
 
-- [ ] Review current changed files.
-- [ ] Confirm which changes belong in the current baseline.
-- [ ] Run:
+- [x] Review current changed files.
+- [x] Confirm which changes belong in the current baseline.
+- [x] Run:
 
 ```bash
 pnpm check
@@ -112,7 +118,7 @@ Recommended slices:
 3. Chinese-first i18n dictionary and language toggle.
 4. Move Farm to `/farm`.
 5. Move Kitchen to `/kitchen`.
-6. Build `/today` placeholder dashboard.
+6. Build `/today` dashboard cards.
 
 Do not merge these into one large UX change if we need real feedback in between.
 
@@ -147,7 +153,7 @@ Do not merge these into one large UX change if we need real feedback in between.
 
 - [x] Move current `FarmPrototype` to `/farm`.
 - [x] Move current `PiggyKitchen` to `/kitchen`.
-- [x] Make `/today` a lightweight dashboard with placeholder cards:
+- [x] Make `/today` a lightweight dashboard with real core cards:
   - today tasks
   - Piggy Fund
   - leaderboard
@@ -180,26 +186,26 @@ Do not merge these into one large UX change if we need real feedback in between.
 
 Goal: add the schema needed for tasks, checklists, coins, fund, and leaderboard.
 
-- [ ] Add `HouseholdUser`.
-- [ ] Seed two users:
+- [x] Add `HouseholdUser`.
+- [x] Seed two users:
   - me
   - wife
-- [ ] Extend `Task`:
-  - type
-  - assignedTo
-  - createdByUserId
-  - completedByUserId
-  - coinValue
+- [x] Extend `Task`:
+  - [x] type
+  - [x] assignedTo
+  - [x] createdByUserId
+  - [x] completedByUserId
+  - [x] coinValue
 - [ ] Add `ChecklistItem`.
-- [ ] Add `CoinEvent`.
-- [ ] Decide whether to keep `FarmEvent` as-is or turn it into a later farm projection.
-- [ ] Run Prisma migration.
+- [x] Add `CoinEvent`.
+- [x] Keep `FarmEvent` as a later/prototype farm-specific event; task rewards now use `CoinEvent`.
+- [x] Sync local Prisma schema for development.
 - [ ] Add domain helpers in `@piggy-days/core`:
-  - task reward calculation
-  - checklist progress
-  - Piggy Fund summary
-  - leaderboard aggregation
-- [ ] Add unit tests for those helpers.
+  - [x] task reward calculation
+  - [ ] checklist progress
+  - [x] Piggy Fund summary
+  - [x] leaderboard aggregation
+- [x] Add unit tests for simple task, `CoinEvent`, fund summary, and leaderboard helpers.
 
 ## Release 1C: Persistent Todo and Piggy Coins
 
@@ -207,52 +213,52 @@ Goal: make the first real daily-use loop work.
 
 Recommended slices:
 
-1. Static task list and create form with local/mock state.
-2. Persistent simple task creation.
-3. Task completion creates `CoinEvent`.
-4. Fund summary updates from real events.
-5. Leaderboard updates from real events.
-6. Checklist item completion.
+1. [x] Persistent simple task creation.
+2. [x] Task completion creates `CoinEvent`.
+3. [x] Fund summary updates from real events.
+4. [x] Leaderboard updates from real events.
+5. [ ] Checklist item completion.
 
 ### API
 
-- [ ] `GET /api/people`.
-- [ ] `GET /api/tasks`.
-- [ ] `POST /api/tasks`.
-- [ ] `GET /api/tasks/:taskId`.
-- [ ] `POST /api/tasks/:taskId/complete`.
+- [x] `GET /api/people`.
+- [x] `GET /api/tasks`.
+- [x] `POST /api/tasks`.
+- [x] `GET /api/tasks/:taskId`.
+- [x] `POST /api/tasks/:taskId/complete`.
 - [ ] `POST /api/tasks/:taskId/checklist-items`.
 - [ ] `PATCH /api/checklist-items/:itemId`.
 - [ ] `POST /api/checklist-items/:itemId/complete`.
-- [ ] `GET /api/fund/summary`.
-- [ ] `GET /api/coins/events`.
-- [ ] `GET /api/leaderboard`.
+- [x] `GET /api/fund/summary`.
+- [x] `GET /api/coins/events`.
+- [x] `GET /api/leaderboard`.
 
 ### Web
 
-- [ ] Create task form.
+- [x] Create task form.
 - [ ] Task list filters:
   - status
   - assignee
   - category
   - date range
-- [ ] Task detail page.
+- [x] Task detail page.
 - [ ] Checklist item editor.
-- [ ] Complete task flow with note, place, cost, and photo URL placeholder.
+- [x] Complete task flow with note, place, cost, and photo URL placeholder.
 - [ ] Complete checklist item flow.
-- [ ] Fund summary page.
+- [x] Fund summary page.
 - [ ] Coin event list with "load more".
-- [ ] Weekly and all-time leaderboard.
+- [x] Weekly and all-time leaderboard.
 
 ### Verification
 
 - [ ] API tests for create task.
 - [ ] API tests for complete task.
 - [ ] API tests for checklist item completion.
-- [ ] API tests for coin event creation.
-- [ ] API tests for fund summary.
-- [ ] API tests for leaderboard.
-- [ ] `pnpm check`.
+- [x] Core tests for coin event creation.
+- [x] Core tests for fund summary.
+- [x] Core tests for leaderboard.
+- [x] Browser verification for create task -> complete task -> fund -> leaderboard -> today.
+- [x] `pnpm check`.
 
 ## Release 1D: Family Gate and Two-Person UX
 
@@ -358,7 +364,7 @@ Goal: make the farm richer after the task/checklist/fund loop is useful.
 Goal: add power features only after private daily use works.
 
 - [ ] Keep `docs/DEPLOYMENT_PLAN.md` current before provisioning AWS resources.
-- [ ] Confirm the local task -> CoinEvent -> fund -> leaderboard loop works before first AWS deployment.
+- [x] Confirm the local task -> CoinEvent -> fund -> leaderboard loop works before first AWS deployment.
 - [ ] Add root `.npmrc` for Amplify pnpm monorepo support.
 - [ ] Add `amplify.yml`.
 - [ ] Configure Amplify deployment for `apps/web`.
@@ -397,8 +403,8 @@ pnpm check
 
 Do these next:
 
-1. Implement Release 1A app shell and route skeleton.
-2. Move Farm to `/farm`.
-3. Move Kitchen to `/kitchen`.
-4. Add Chinese-first i18n and language toggle.
-5. Then start Release 1B schema work for Todo and Piggy Coins.
+1. Commit the current simple-task core loop baseline.
+2. Add persistent `ChecklistItem` for task detail.
+3. Let checklist item completion create immutable `CoinEvent` rows.
+4. Add focused API tests for create task, complete task, fund summary, and leaderboard.
+5. Keep Explore, Shopping, AI, Kitchen persistence, and rich Farm gameplay out of the next slice.

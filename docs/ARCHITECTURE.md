@@ -18,6 +18,12 @@ Task/checklist completion -> CoinEvent -> Piggy Fund -> Leaderboard -> Review ->
 
 Splitting these into separate apps would add friction and duplicate state. Use routes inside one PWA instead.
 
+Current implemented loop:
+
+```txt
+Simple task completion -> CoinEvent -> Piggy Fund -> weekly/all-time leaderboard -> Today/Fund cards
+```
+
 ## Monorepo Layout
 
 ```txt
@@ -76,10 +82,10 @@ Exposure rules:
 
 ```txt
 /             -> redirect to /today
-/today        -> daily home
-/tasks        -> task and checklist list
-/tasks/[id]   -> task detail and checklist completion
-/fund         -> Piggy Fund, coin ledger, leaderboard
+/today        -> daily home with real simple-task/fund/leaderboard snapshots
+/tasks        -> simple task creation and list
+/tasks/[id]   -> simple task detail and completion
+/fund         -> Piggy Fund, coin ledger, weekly leaderboard, all-time leaderboard
 /farm         -> piggy reward surface
 /kitchen      -> dinner planning prototype
 /settings     -> language, current user, session
@@ -237,20 +243,22 @@ flowchart LR
   Lambda --> CloudWatch
 ```
 
-Deployment should wait until the local task completion, `CoinEvent`, Piggy Fund, and leaderboard loop works. The first AWS version should not include scraper, S3 uploads, Places, or AI unless the core loop already works in production.
+The local simple task -> `CoinEvent` -> Piggy Fund -> leaderboard loop has been verified. The first AWS version still needs production environment setup, a production Prisma migration path, and CORS restricted to the deployed web origin. It should not include scraper, S3 uploads, Places, or AI.
 
 ## First MVP Flow
+
+Status: implemented for simple tasks.
 
 1. User opens `/today`.
 2. App defaults to Simplified Chinese.
 3. User selects current identity: me or wife.
-4. User creates a task and sets a Piggy Coin reward.
+4. User creates a simple task and sets a Piggy Coin reward.
 5. API validates input and persists the task.
 6. User completes the task with optional check-in fields.
 7. API writes `CheckIn` and immutable `CoinEvent`.
 8. Piggy Fund and leaderboard are derived from coin events.
 9. Web refreshes `/today`, `/tasks`, and `/fund`.
-10. `/farm` shows a lightweight reward/memory projection.
+10. `/farm` remains a lightweight/prototype reward surface and must not become the source of truth for task rewards.
 
 ## Pagination and List Strategy
 

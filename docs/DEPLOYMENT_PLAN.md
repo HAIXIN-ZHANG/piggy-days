@@ -1,6 +1,6 @@
 # Deployment Plan
 
-Last reviewed: 2026-06-01.
+Last reviewed: 2026-06-21.
 
 Piggy Days should deploy to AWS in a way that is simple enough for a personal project, but not careless with private household data.
 
@@ -17,13 +17,13 @@ The deployment target is intentionally modest:
 
 Do not deploy just the app shell.
 
-The first useful AWS deployment should wait until this loop works locally:
+This loop now works locally for simple tasks:
 
 ```txt
 Create task -> complete task -> write CoinEvent -> update Piggy Fund -> show leaderboard
 ```
 
-Deploying before that is technically possible, but it would spend setup effort before the app has a daily-use core.
+The next deployment gate is privacy and production readiness: add the family gate, decide the production Prisma migration path, configure secrets, and restrict CORS to the deployed web origin.
 
 ## Target Architecture
 
@@ -323,10 +323,10 @@ Reasons:
 
 ### Before AWS Work
 
-- [ ] Persistent task creation works locally.
-- [ ] Task completion writes immutable `CoinEvent`.
-- [ ] `/fund` derives balance from coin events.
-- [ ] Leaderboard derives from positive coin events.
+- [x] Persistent task creation works locally.
+- [x] Task completion writes immutable `CoinEvent`.
+- [x] `/fund` derives balance from coin events.
+- [x] Leaderboard derives from positive coin events.
 - [ ] Family gate protects private API routes.
 - [ ] `pnpm check` passes.
 

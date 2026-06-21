@@ -97,14 +97,17 @@ Use Express for v1 because it is lighter and already familiar.
 - Prisma ORM.
 - AWS RDS PostgreSQL for deployment later.
 
-V1 data focus:
+Implemented data focus:
 
 - `HouseholdUser`.
 - `Task`.
-- `ChecklistItem`.
 - `CheckIn`.
 - `CoinEvent`.
-- `ReviewCard`.
+- `ReviewCard` foundation.
+
+Next data focus:
+
+- `ChecklistItem`.
 
 Shopping and farm-specific persistence can exist in the schema, but should not drive the next milestone.
 

@@ -1,4 +1,38 @@
-# Core Loop Review (2026-06-20)
+# Core Loop Review And Closure (2026-06-20)
+
+## Status Update (2026-06-21)
+
+The recommended next slice from this review has been implemented for simple tasks.
+
+Implemented now:
+
+- `/settings` current-user selection is used by task creation and completion.
+- `/tasks` can create and list persistent simple tasks.
+- `/tasks/[id]` can complete a simple task with optional note, place, cost, and photo URL.
+- Completing a simple task writes one immutable positive `CoinEvent`.
+- `GET /api/fund/summary` derives balance, all-time earned, redeemed, this-week earned, and recent events from `CoinEvent`.
+- `GET /api/leaderboard?range=week|all` derives leaderboard rows from positive `CoinEvent` rows only.
+- `/today` and `/fund` show real task/fund/leaderboard/reward data instead of placeholder values.
+- `GET /api/farm/summary` is now a lightweight CoinEvent projection. The rich Farm UI remains prototype/local and is not the reward source of truth.
+- Local browser verification passed for:
+
+```txt
+pick wife -> create simple task -> complete task -> write CoinEvent -> derive Fund -> derive leaderboard -> show Today
+```
+
+Still not implemented:
+
+- Persistent `ChecklistItem`.
+- Checklist item completion rewards.
+- Manual coin adjustments or redemptions.
+- Family password screen.
+- Advanced split-credit rules for shared tasks.
+- API integration tests for the new endpoints.
+
+Verification after implementation:
+
+- `pnpm check` passed.
+- Browser verification used `http://127.0.0.1:3001` for web and `http://localhost:4000` for API.
 
 ## Scope
 
@@ -27,24 +61,28 @@ App shell and routes -> Todo/checklist -> Piggy Coins/Fund -> Explore checklists
 - Ran `pnpm check`.
 - Started the local web app and API, opened `/today`, and called the current API routes with `curl`.
 
-## Summary
+## Original Summary
 
-The product direction is coherent, but the implementation is still a routed prototype rather than a closed MVP loop.
+The original 2026-06-20 finding was that the product direction was coherent, but the implementation was still a routed prototype rather than a closed MVP loop.
 
-The main issue is not visual quality or build stability. The main issue is that the current code still uses the old farm-reward mental model, while the docs already moved to an event-led `CoinEvent` model.
+That issue is now addressed for simple tasks. The app still needs checklist persistence and richer product rules before the broader todo/checklist MVP is complete.
 
-That means the current app can present the idea of the product, but it cannot yet complete one real household flow from task completion to fund and leaderboard updates.
+The remaining sections below preserve the original review findings for traceability.
 
-## Findings
+## Original Findings
 
-### P0. There is no usable MVP loop yet
+### P0. No usable MVP loop existed yet
 
-The docs define `/today`, `/tasks`, `/tasks/[id]`, and `/fund` as the core MVP path. In practice:
+Status: addressed for simple tasks on 2026-06-21.
 
-- `/tasks` is still a route placeholder.
-- `/tasks/[id]` is still a route placeholder.
-- `/fund` is still a route placeholder.
-- `/today` shows hardcoded preview cards and explicitly says that real task data will be added in a later slice.
+Original finding:
+
+The docs defined `/today`, `/tasks`, `/tasks/[id]`, and `/fund` as the core MVP path. At the time of the original review:
+
+- `/tasks` was still a route placeholder.
+- `/tasks/[id]` was still a route placeholder.
+- `/fund` was still a route placeholder.
+- `/today` showed hardcoded preview cards and explicitly said that real task data would be added in a later slice.
 
 Evidence:
 
@@ -61,15 +99,17 @@ Impact:
 - A real user cannot see a real fund or leaderboard update.
 - The app currently demonstrates structure, not the intended product loop.
 
-### P0. Rewards still use the old farm-resource source of truth
+### P0. Rewards still used the old farm-resource source of truth
+
+Status: addressed for simple task completion. Rich Farm UI remains prototype/local.
 
 The docs clearly say that `CoinEvent` should be the main reward ledger and that Fund and leaderboard should be derived from it. The current implementation still awards farm resources directly.
 
-Current behavior:
+Original behavior:
 
-- `POST /api/tasks/:taskId/complete` returns `farm.xp` and farm resource rewards.
-- `GET /api/farm/summary` returns a default farm state.
-- `/farm` manages `feed`, `seeds`, `coins`, and `xp` entirely in local component state.
+- `POST /api/tasks/:taskId/complete` returned `farm.xp` and farm resource rewards.
+- `GET /api/farm/summary` returned a default farm state.
+- `/farm` managed `feed`, `seeds`, `coins`, and `xp` entirely in local component state.
 
 Evidence:
 
@@ -84,7 +124,9 @@ Impact:
 - The current reward system is not explainable in the way the docs require.
 - The same app now has two competing reward models: documented `CoinEvent` vs implemented farm resources.
 
-### P0. The data model still cannot support the documented two-person coin loop
+### P0. The data model could not support the documented two-person coin loop
+
+Status: partially addressed. `HouseholdUser`, task assignment/completion fields, and `CoinEvent` exist. `ChecklistItem` is still pending.
 
 The documented MVP requires:
 
@@ -98,14 +140,14 @@ The documented MVP requires:
 
 The current schema does not have those core pieces yet.
 
-Current gaps:
+Original gaps:
 
-- No `HouseholdUser` model.
+- `HouseholdUser` did not exist yet.
 - No `ChecklistItem` model.
-- No `CoinEvent` model.
-- `Task` does not track `createdByUserId`, `assignedTo`, `completedByUserId`, or `coinValue`.
-- Task statuses are still only `TODO` and `COMPLETED`, while docs already assume richer flow.
-- The shared task category set does not match the documented one.
+- `CoinEvent` did not exist yet.
+- `Task` did not track `createdByUserId`, `assignedTo`, `completedByUserId`, or `coinValue`.
+- Task statuses were only `TODO` and `COMPLETED`, while docs already assumed richer flow.
+- The shared task category set did not match the documented one.
 
 Evidence:
 
@@ -121,7 +163,9 @@ Impact:
 - The fund cannot be derived from the intended ledger.
 - The two-person design exists in docs and settings UI, but not in the real domain model.
 
-### P1. The secondary prototypes feel more real than the main product engine
+### P1. The secondary prototypes felt more real than the main product engine
+
+Status: partially addressed. `/tasks`, `/tasks/[id]`, `/fund`, and `/today` now support the simple-task loop. Farm and Kitchen remain visually richer prototypes.
 
 The docs say Farm is the reward surface and Kitchen is a prototype/secondary route. But the current app gives users much richer interaction in Farm and Kitchen than in Tasks or Fund.
 
@@ -139,6 +183,8 @@ Impact:
 - Engineering effort appears to be ahead on secondary surfaces and behind on the primary loop.
 
 ### P1. Shared-task reward rules are still undefined
+
+Status: still open. The current implementation uses one clear rule: the completer earns the simple-task reward.
 
 The docs allow `assignedTo = me | wife | both` and also require a personal leaderboard. That creates unresolved business rules:
 
@@ -163,7 +209,9 @@ Recommendation:
 - Make the first real loop support single completer attribution explicitly.
 - Defer more complex split-credit rules until after the simple loop is stable.
 
-### P1. The task completion contract still bakes in old outing/shopping assumptions
+### P1. The task completion contract baked in old outing/shopping assumptions
+
+Status: addressed for simple task completion. `isCityOuting` and `grocerySavingsCents` are not part of the simple-task completion contract.
 
 The current completion schema includes `isCityOuting` and `grocerySavingsCents`, and the reward helpers still convert those into farm rewards and XP.
 
@@ -182,7 +230,9 @@ Recommendation:
 - The first real loop should center on task completion and `CoinEvent`.
 - Outing bonuses, shopping savings, and richer farm progression should be moved out of the critical path.
 
-### P2. The current user setting exists only in local UI state
+### P2. The current user setting existed only in local UI state
+
+Status: addressed for simple tasks. The selected current user is used as task creator/completer and reward earner.
 
 `/settings` already stores `me` or `wife` in local storage, but that identity is not used by the API, not attached to task creation, and not used for reward attribution.
 
@@ -195,6 +245,8 @@ Impact:
 - The app appears to support two people, but the choice is not connected to any real business action.
 
 ### P2. Local dev CORS defaults may drift from the real web port
+
+Status: addressed for local development. The API allows both `localhost:<port>` and `127.0.0.1:<port>` in non-production.
 
 The API defaults `WEB_ORIGIN` to `http://localhost:3000`, while the web app can move to `3001` when `3000` is occupied.
 
@@ -210,6 +262,8 @@ This is not the main product issue, but it will become a practical friction poin
 
 ### P2. Some docs are now stale relative to the codebase
 
+Status: addressed in the 2026-06-21 docs refresh.
+
 The most obvious example is `README.md`, which still describes the app shell as the next milestone even though that route-shell work has already been completed.
 
 Evidence:
@@ -221,6 +275,10 @@ Impact:
 - A new implementation agent could pick the wrong starting point if they rely on the README first.
 
 ## Recommended Next Slice
+
+Status: implemented for simple tasks.
+
+Original recommendation:
 
 Do not try to fix everything in one pass.
 
@@ -265,7 +323,9 @@ create simple task -> list task -> complete task -> write CoinEvent -> derive Fu
 - Kitchen persistence.
 - AI or external APIs.
 
-## Acceptance Criteria For The Next Slice
+## Original Acceptance Criteria For The Next Slice
+
+Status: met for simple tasks, except checklist-specific work was intentionally out of scope.
 
 - A user can pick `me` or `wife` in Settings.
 - A user can create a simple task from the web UI.
@@ -278,7 +338,7 @@ create simple task -> list task -> complete task -> write CoinEvent -> derive Fu
 - `pnpm check` passes.
 - Local browser verification confirms the end-to-end flow.
 
-## Prompt For The Implementation Agent
+## Original Prompt For The Implementation Agent
 
 ```txt
 You are the implementation agent for Piggy Days.

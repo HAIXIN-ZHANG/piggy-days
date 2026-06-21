@@ -22,8 +22,10 @@ The important design choice is explainability. Instead of only storing `fundBala
 
 The current Prisma schema already includes:
 
+- `HouseholdUser`
 - `Task`
 - `CheckIn`
+- `CoinEvent`
 - `FarmEvent`
 - `ShoppingList`
 - `ShoppingItem`
@@ -33,9 +35,11 @@ The current Prisma schema already includes:
 - `Deal`
 - `ReviewCard`
 
-This is a useful foundation, but the next implementation pass should shift the reward source of truth from `FarmEvent` to `CoinEvent`.
+Task rewards now use `CoinEvent` as the reward source of truth. `FarmEvent` remains available for later farm-specific projection events, not for the first task reward ledger.
 
-## Next Priority Models
+The next schema gap is `ChecklistItem`.
+
+## Current Core Models
 
 ### `HouseholdUser`
 
@@ -78,8 +82,43 @@ Important fields:
 Relationships:
 
 - Optional `CheckIn`.
-- Many `ChecklistItem`.
+- Many `ChecklistItem` later.
 - Many `CoinEvent`.
+
+### `CheckIn`
+
+Represents proof or memory after completing a task.
+
+Important fields:
+
+- `id`
+- `taskId`
+- `photoUrl`
+- `note`
+- `costCents`
+- `place`
+- `createdAt`
+
+V1 can store `photoUrl` as a placeholder. S3 upload can come later.
+
+### `CoinEvent`
+
+Immutable record of earned or redeemed Piggy Coins.
+
+Important fields:
+
+- `id`
+- `amount`: positive for earning, negative for redemption or correction.
+- `reason`
+- `sourceType`: task, checklist item, kitchen, explore, review, shopping, manual adjustment.
+- `taskId`
+- `earnedByUserId`
+- `createdByUserId`
+- `createdAt`
+
+This is the main reward ledger. Piggy Fund and leaderboards are derived from this table.
+
+## Next Priority Model
 
 ### `ChecklistItem`
 
@@ -102,45 +141,13 @@ Important fields:
 
 Checklist items should be editable before and during the task. Completing an item can award coins immediately.
 
-### `CheckIn`
-
-Represents proof or memory after completing a task.
-
-Important fields:
-
-- `id`
-- `taskId`
-- `checklistItemId` optional later.
-- `photoUrl`
-- `note`
-- `costCents`
-- `place`
-- `createdAt`
-
-V1 can store `photoUrl` as a placeholder. S3 upload can come later.
-
-### `CoinEvent`
-
-Immutable record of earned or redeemed Piggy Coins.
-
-Important fields:
-
-- `id`
-- `amount`: positive for earning, negative for redemption or correction.
-- `reason`
-- `sourceType`: task, checklist item, kitchen, explore, review, shopping, manual adjustment.
-- `taskId`
-- `checklistItemId`
-- `reviewId`
-- `earnedByUserId`
-- `createdByUserId`
-- `createdAt`
-
-This should become the main reward ledger.
+## Later Model Updates
 
 ### `ReviewCard`
 
 Represents a manually generated memory summary.
+
+The current schema has the first review-card foundation. Later review work can add the richer summary fields below.
 
 Important fields:
 
