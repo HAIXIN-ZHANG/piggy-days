@@ -117,13 +117,13 @@ Returns:
   "people": [
     {
       "id": "me",
-      "displayName": "我",
-      "avatarLabel": "我"
+      "displayName": "Me",
+      "avatarLabel": "Me"
     },
     {
       "id": "wife",
-      "displayName": "老婆",
-      "avatarLabel": "她"
+      "displayName": "Piggy",
+      "avatarLabel": "Piggy"
     }
   ]
 }
@@ -155,7 +155,7 @@ Returns:
     {
       "id": "task_123",
       "type": "simple",
-      "title": "倒垃圾",
+      "title": "Take out trash",
       "category": "chore",
       "status": "todo",
       "assignedTo": "me",
@@ -178,9 +178,9 @@ Body:
 ```json
 {
   "type": "simple",
-  "title": "倒垃圾",
+  "title": "Take out trash",
   "category": "chore",
-  "description": "晚上出门前顺手做",
+  "description": "Do it before we go out tonight",
   "place": "Home",
   "plannedDate": "2026-06-01T10:00:00.000Z",
   "createdByUserId": "me",
@@ -211,7 +211,7 @@ Returns:
   "task": {
     "id": "task_123",
     "type": "simple",
-    "title": "倒垃圾",
+    "title": "Take out trash",
     "status": "todo",
     "coinValue": 5
   }
@@ -229,14 +229,14 @@ Returns task detail and checklist items:
   "task": {
     "id": "task_123",
     "type": "checklist",
-    "title": "周末探店",
+    "title": "Weekend cafe visit",
     "status": "in_progress",
     "coinValue": 10
   },
   "checklistItems": [
     {
       "id": "item_1",
-      "title": "选一家店",
+      "title": "Pick a place",
       "status": "completed",
       "coinValue": 2,
       "sortOrder": 1
@@ -296,8 +296,8 @@ Body:
 
 ```json
 {
-  "title": "拍一张照片",
-  "description": "留作周末回忆",
+  "title": "Take a photo",
+  "description": "Keep it as a weekend memory",
   "place": "Kings Park",
   "coinValue": 3,
   "sortOrder": 2
@@ -319,7 +319,7 @@ Body:
 ```json
 {
   "completedByUserId": "wife",
-  "note": "照片很好看"
+  "note": "The photo looks great"
 }
 ```
 
@@ -375,7 +375,7 @@ Body:
 ```json
 {
   "amount": -20,
-  "reason": "兑换周末小奖励",
+  "reason": "Redeem a small weekend treat",
   "createdByUserId": "me"
 }
 ```
@@ -400,12 +400,12 @@ Returns:
   "leaders": [
     {
       "userId": "me",
-      "displayName": "我",
+      "displayName": "Me",
       "earnedCoins": 18
     },
     {
       "userId": "wife",
-      "displayName": "老婆",
+      "displayName": "Piggy",
       "earnedCoins": 15
     }
   ]
@@ -498,7 +498,7 @@ Future response should derive from coin events, review cards, and optional farm-
   "recentRewards": [],
   "memoryCards": [],
   "piggies": [],
-  "dialogue": "今天也有小小进展。"
+  "dialogue": "Tiny progress today."
 }
 ```
 

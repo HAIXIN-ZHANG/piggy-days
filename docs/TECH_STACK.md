@@ -215,16 +215,18 @@ Frontend visual QA should cover mobile first.
 
 Deployment is later.
 
-Target:
+Target AWS shape:
 
 - AWS Amplify Hosting for Next.js PWA.
-- AWS App Runner for Express API.
+- Amazon ECR plus AWS App Runner for Express API.
 - AWS RDS PostgreSQL for database.
 - AWS S3 for file storage.
 - AWS Lambda for scraper.
 - Amazon EventBridge Scheduler for cron.
 - AWS Secrets Manager for secrets.
 - CloudWatch for logs.
+
+See `docs/DEPLOYMENT_PLAN.md` for the deployment runbook, security boundary, migration strategy, and phased checklist.
 
 Do not use:
 
@@ -242,7 +244,7 @@ Suggested flow:
 
 - PR or push runs lint, typecheck, tests, and build.
 - Amplify deploys web from GitHub.
-- GitHub Actions builds API Docker image and updates App Runner.
+- GitHub Actions builds the API Docker image, pushes it to ECR, and updates App Runner.
 - GitHub Actions deploys scraper Lambda.
 
 Database migrations should be manual at first, then automated later when stable.

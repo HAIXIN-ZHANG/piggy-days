@@ -186,10 +186,10 @@ Mood should be based on recent activity, not strict timers.
 
 Example dialogue:
 
-- "今天也有小小进展。"
-- "小猪基金又长大了一点。"
-- "这周值得留一张回忆卡。"
-- "做完一个 checklist，农场也亮了一点。"
+- "Tiny progress today."
+- "The Piggy Fund grew a little."
+- "This week deserves a memory card."
+- "One checklist done, one farm light on."
 - "Dinner mission complete."
 
 ## Farm Areas

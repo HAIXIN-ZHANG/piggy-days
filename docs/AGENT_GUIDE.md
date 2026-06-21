@@ -39,25 +39,25 @@ First write a checkpoint that is useful for discussion, not just a task list.
 
 Use this structure:
 
-1. 已经做了什么
+1. What Has Already Been Done
    - Summarize the current product/code/doc state relevant to this next step.
    - Mention existing prototypes, routes, docs, or unfinished work.
-2. 现在的需求是什么
+2. What The Current Requirement Is
    - Restate the user's latest product requirement in plain language.
    - Point out any changed priority or assumption.
-3. 下一步建议做什么
+3. What The Next Recommended Slice Is
    - Name the smallest next slice.
    - Explain why it is the right next slice now.
-4. 要实现什么
+4. What Will Be Implemented
    - Break down the behavior/UI/data that the slice needs.
    - Identify what will be mock, local-only, or persisted.
-5. 这次不做什么
+5. What Is Out Of Scope This Time
    - Explicitly keep tempting but premature work out of scope.
-6. 需要一起确认的细节
+6. Details To Confirm Together
    - List UX/product questions the user may want to change before coding.
-7. 做完怎么测试
+7. How To Test Afterward
    - Include a short wife-test scenario and pass/fail signals.
-8. 你可以怎么选
+8. User Options
    - Offer clear next actions, usually:
      - continue discussing details
      - update docs/notes first

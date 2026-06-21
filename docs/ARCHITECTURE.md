@@ -88,7 +88,7 @@ Exposure rules:
 Initial primary navigation:
 
 ```txt
-今天 / 任务 / 基金 / 小猪 / 设置
+Today / Tasks / Fund / Piggy Home / Settings
 ```
 
 Kitchen can exist at `/kitchen`, but should remain a secondary/prototype entry until it passes real home testing.
@@ -217,6 +217,27 @@ flowchart LR
   Places["Google Places"] --> API["Express API"]
   OpenAI["OpenAI API"] --> API
 ```
+
+## Deployment Architecture
+
+The planned AWS deployment is documented in `docs/DEPLOYMENT_PLAN.md`.
+
+```mermaid
+flowchart LR
+  GitHub["GitHub"] --> Amplify["Amplify Hosting\napps/web"]
+  GitHub --> Actions["GitHub Actions"]
+  Actions --> ECR["Amazon ECR\nAPI image"]
+  ECR --> AppRunner["App Runner\napps/api"]
+  AppRunner --> Secrets["Secrets Manager"]
+  AppRunner --> RDS["RDS PostgreSQL"]
+  AppRunner --> S3["S3 private bucket\nlater"]
+  EventBridge["EventBridge Scheduler\nlater"] --> Lambda["Lambda scraper\nlater"]
+  Lambda --> RDS
+  AppRunner --> CloudWatch["CloudWatch Logs"]
+  Lambda --> CloudWatch
+```
+
+Deployment should wait until the local task completion, `CoinEvent`, Piggy Fund, and leaderboard loop works. The first AWS version should not include scraper, S3 uploads, Places, or AI unless the core loop already works in production.
 
 ## First MVP Flow
 

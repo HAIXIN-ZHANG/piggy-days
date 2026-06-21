@@ -10,17 +10,30 @@ datasource db {
 }
 
 enum TaskCategory {
+  DAILY
   SHOPPING
   COOKING
-  CITY_OUTING
+  EXPLORE
   CHORE
   DATE
   OTHER
 }
 
+enum TaskType {
+  SIMPLE
+  CHECKLIST
+}
+
 enum TaskStatus {
   TODO
+  IN_PROGRESS
   COMPLETED
+}
+
+enum TaskAssignment {
+  ME
+  WIFE
+  BOTH
 }
 
 enum RetailerCode {
@@ -35,22 +48,57 @@ enum FarmResource {
   COINS
 }
 
+enum CoinEventSourceType {
+  TASK
+  CHECKLIST_ITEM
+  KITCHEN
+  EXPLORE
+  REVIEW
+  SHOPPING
+  MANUAL
+}
+
+model HouseholdUser {
+  id                String      @id
+  name              String      @unique
+  displayName       String
+  avatarLabel       String
+  sortOrder         Int         @default(0)
+  createdTasks      Task[]      @relation("TaskCreatedBy")
+  completedTasks    Task[]      @relation("TaskCompletedBy")
+  earnedCoinEvents  CoinEvent[] @relation("CoinEventEarnedBy")
+  createdCoinEvents CoinEvent[] @relation("CoinEventCreatedBy")
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
 model Task {
-  id          String       @id @default(cuid())
-  title       String
-  category    TaskCategory @default(OTHER)
-  description String?
-  place       String?
-  plannedDate DateTime?
-  status      TaskStatus   @default(TODO)
-  completedAt DateTime?
-  checkIn     CheckIn?
-  farmEvents  FarmEvent[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                String         @id @default(cuid())
+  type              TaskType       @default(SIMPLE)
+  title             String
+  category          TaskCategory   @default(OTHER)
+  description       String?
+  place             String?
+  plannedDate       DateTime?
+  status            TaskStatus     @default(TODO)
+  createdByUserId   String
+  createdByUser     HouseholdUser  @relation("TaskCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  assignedTo        TaskAssignment @default(ME)
+  completedByUserId String?
+  completedByUser   HouseholdUser? @relation("TaskCompletedBy", fields: [completedByUserId], references: [id], onDelete: SetNull)
+  coinValue         Int            @default(1)
+  completedAt       DateTime?
+  checkIn           CheckIn?
+  farmEvents        FarmEvent[]
+  coinEvents        CoinEvent[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   @@index([status])
   @@index([plannedDate])
+  @@index([createdByUserId])
+  @@index([completedByUserId])
+  @@index([assignedTo])
 }
 
 model CheckIn {
@@ -78,6 +126,25 @@ model FarmEvent {
   @@index([createdAt])
 }
 
+model CoinEvent {
+  id              String              @id @default(cuid())
+  amount          Int
+  reason          String
+  sourceType      CoinEventSourceType
+  taskId          String?
+  task            Task?               @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  earnedByUserId  String?
+  earnedByUser    HouseholdUser?      @relation("CoinEventEarnedBy", fields: [earnedByUserId], references: [id], onDelete: SetNull)
+  createdByUserId String
+  createdByUser   HouseholdUser       @relation("CoinEventCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  createdAt       DateTime            @default(now())
+
+  @@index([createdAt])
+  @@index([sourceType])
+  @@index([taskId])
+  @@index([earnedByUserId])
+}
+
 model ShoppingList {
   id        String         @id @default(cuid())
   title     String         @default("Shopping list")
@@ -87,19 +154,19 @@ model ShoppingList {
 }
 
 model ShoppingItem {
-  id                     String        @id @default(cuid())
-  listId                 String
-  list                   ShoppingList  @relation(fields: [listId], references: [id], onDelete: Cascade)
-  productId              String?
-  product                Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
-  name                   String
-  quantity               Int           @default(1)
-  isBought               Boolean       @default(false)
-  estimatedPriceCents    Int?
-  recommendedRetailer    RetailerCode?
+  id                      String        @id @default(cuid())
+  listId                  String
+  list                    ShoppingList  @relation(fields: [listId], references: [id], onDelete: Cascade)
+  productId               String?
+  product                 Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name                    String
+  quantity                Int           @default(1)
+  isBought                Boolean       @default(false)
+  estimatedPriceCents     Int?
+  recommendedRetailer     RetailerCode?
   recommendedRetailerNote String?
-  createdAt              DateTime      @default(now())
-  updatedAt              DateTime      @updatedAt
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
 
   @@index([listId])
 }
@@ -116,54 +183,54 @@ model Retailer {
 }
 
 model Product {
-  id                  String          @id @default(cuid())
-  retailerId          String
-  retailer            Retailer        @relation(fields: [retailerId], references: [id], onDelete: Cascade)
-  name                String
-  brand               String?
-  category            String?
-  sizeLabel           String?
-  currentPriceCents   Int?
-  unitPriceCents      Int?
-  unitPriceLabel      String?
-  isDeal              Boolean         @default(false)
-  priceSnapshots      PriceSnapshot[]
-  deals               Deal[]
-  shoppingItems       ShoppingItem[]
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
+  id                String          @id @default(cuid())
+  retailerId        String
+  retailer          Retailer        @relation(fields: [retailerId], references: [id], onDelete: Cascade)
+  name              String
+  brand             String?
+  category          String?
+  sizeLabel         String?
+  currentPriceCents Int?
+  unitPriceCents    Int?
+  unitPriceLabel    String?
+  isDeal            Boolean         @default(false)
+  priceSnapshots    PriceSnapshot[]
+  deals             Deal[]
+  shoppingItems     ShoppingItem[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   @@index([name])
   @@index([retailerId])
 }
 
 model PriceSnapshot {
-  id         String   @id @default(cuid())
-  retailerId String
-  retailer   Retailer @relation(fields: [retailerId], references: [id], onDelete: Cascade)
-  productId  String
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  priceCents Int
+  id             String   @id @default(cuid())
+  retailerId     String
+  retailer       Retailer @relation(fields: [retailerId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  priceCents     Int
   unitPriceCents Int?
-  capturedAt DateTime @default(now())
+  capturedAt     DateTime @default(now())
 
   @@index([productId, capturedAt])
   @@index([retailerId, capturedAt])
 }
 
 model Deal {
-  id             String       @id @default(cuid())
-  retailerId     String
-  retailer       Retailer     @relation(fields: [retailerId], references: [id], onDelete: Cascade)
-  productId      String
-  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
-  title          String
-  originalCents  Int?
-  dealCents      Int
-  startsAt       DateTime?
-  endsAt         DateTime?
-  sourceUrl      String?
-  createdAt      DateTime     @default(now())
+  id            String    @id @default(cuid())
+  retailerId    String
+  retailer      Retailer  @relation(fields: [retailerId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  title         String
+  originalCents Int?
+  dealCents     Int
+  startsAt      DateTime?
+  endsAt        DateTime?
+  sourceUrl     String?
+  createdAt     DateTime  @default(now())
 
   @@index([retailerId])
   @@index([productId])
@@ -171,18 +238,18 @@ model Deal {
 }
 
 model ReviewCard {
-  id                    String      @id @default(cuid())
-  rangeStart            DateTime
-  rangeEnd              DateTime
-  summary               String
-  completedTaskCount    Int         @default(0)
-  placesVisited         Json        @default("[]")
-  moneySpentCents       Int         @default(0)
-  grocerySavingsCents   Int         @default(0)
-  thingsWorthRepeating  Json        @default("[]")
-  suggestedNextTask     String?
-  farmEvents            FarmEvent[]
-  createdAt             DateTime    @default(now())
+  id                   String      @id @default(cuid())
+  rangeStart           DateTime
+  rangeEnd             DateTime
+  summary              String
+  completedTaskCount   Int         @default(0)
+  placesVisited        Json        @default("[]")
+  moneySpentCents      Int         @default(0)
+  grocerySavingsCents  Int         @default(0)
+  thingsWorthRepeating Json        @default("[]")
+  suggestedNextTask    String?
+  farmEvents           FarmEvent[]
+  createdAt            DateTime    @default(now())
 
   @@index([rangeStart, rangeEnd])
 }

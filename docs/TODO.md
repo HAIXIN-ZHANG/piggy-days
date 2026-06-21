@@ -14,14 +14,14 @@ Before implementing the next slice, first do a pre-work checkpoint with the user
 
 The checkpoint must include:
 
-1. 已经做了什么.
-2. 现在的需求是什么.
-3. 下一步建议做什么.
-4. 要实现什么.
-5. 这次不做什么.
-6. 需要一起确认的细节.
-7. 做完怎么测试.
-8. 用户可以选择继续讨论、更新文档、或开始实现.
+1. What has already been done.
+2. What the current requirement is.
+3. What the next recommended slice is.
+4. What will be implemented.
+5. What is out of scope this time.
+6. Details to confirm together.
+7. How to test afterward.
+8. User options: continue discussing, update docs/notes first, or start implementation.
 
 Do not automatically start coding the next roadmap item if product behavior, UX, route structure, rewards, task flow, data model, or language copy may need discussion.
 
@@ -58,6 +58,8 @@ App shell and routes -> Todo/checklist -> Piggy Coins/Fund -> Explore checklists
 - Farm reward/domain helpers in `@piggy-days/core`.
 - Piggy Kitchen prototype with local inventory, quick-add items, dinner settings, deterministic recommendations, shopping gap output, and dish library.
 - Kitchen recommendation helpers in `@piggy-days/core`.
+- App shell routes for `/today`, `/tasks`, `/tasks/[id]`, `/fund`, `/farm`, `/kitchen`, and `/settings`.
+- Chinese-first navigation, route empty states, local language setting, and current-user setting.
 - Tooling baseline: TypeScript, ESLint, Prettier, tests, build scripts, Prisma scripts, and `pnpm check`.
 
 ### Scaffolded but Not Real Yet
@@ -65,11 +67,9 @@ App shell and routes -> Todo/checklist -> Piggy Coins/Fund -> Explore checklists
 - Tasks API returns mock/in-memory shapes.
 - Farm API returns default state and does not derive from real events.
 - Farm and Kitchen frontend state is local only.
-- No app shell routes yet; current home page still contains both Farm and Kitchen.
-- No real Todo/Fund UI yet.
+- Todo and Fund routes exist, but they are warm empty states without real data yet.
 - No `HouseholdUser`, `ChecklistItem`, or `CoinEvent` models yet.
 - No family password screen yet.
-- No persistent language setting beyond planned local storage.
 
 ### Complexity Parking Lot
 
@@ -118,36 +118,36 @@ Do not merge these into one large UX change if we need real feedback in between.
 
 ### Routes
 
-- [ ] Add `/today`.
-- [ ] Add `/tasks`.
-- [ ] Add `/tasks/[id]`.
-- [ ] Add `/fund`.
-- [ ] Add `/farm`.
-- [ ] Add `/kitchen`.
-- [ ] Add `/settings`.
-- [ ] Redirect `/` to `/today`.
+- [x] Add `/today`.
+- [x] Add `/tasks`.
+- [x] Add `/tasks/[id]`.
+- [x] Add `/fund`.
+- [x] Add `/farm`.
+- [x] Add `/kitchen`.
+- [x] Add `/settings`.
+- [x] Redirect `/` to `/today`.
 
 ### App Shell
 
-- [ ] Add mobile-first bottom navigation.
-- [ ] Add desktop-friendly navigation layout.
-- [ ] Add page title area.
-- [ ] Add warm empty states for new pages.
-- [ ] Keep navigation labels Chinese-first.
-- [ ] Keep primary navigation limited to:
-  - 今天
-  - 任务
-  - 基金
-  - 小猪
-  - 设置
-- [ ] Keep Kitchen as a secondary/prototype entry until it passes home testing.
-- [ ] Keep Explore, Review, Memories, and Shop out of primary nav until they become `active`.
+- [x] Add mobile-first bottom navigation.
+- [x] Add desktop-friendly navigation layout.
+- [x] Add page title area.
+- [x] Add warm empty states for new pages.
+- [x] Keep navigation labels Chinese-first.
+- [x] Keep primary navigation limited to:
+  - Today
+  - Tasks
+  - Fund
+  - Piggy Home
+  - Settings
+- [x] Keep Kitchen as a secondary/prototype entry until it passes home testing.
+- [x] Keep Explore, Review, Memories, and Shop out of primary nav until they become `active`.
 
 ### Existing Prototypes
 
-- [ ] Move current `FarmPrototype` to `/farm`.
-- [ ] Move current `PiggyKitchen` to `/kitchen`.
-- [ ] Make `/today` a lightweight dashboard with placeholder cards:
+- [x] Move current `FarmPrototype` to `/farm`.
+- [x] Move current `PiggyKitchen` to `/kitchen`.
+- [x] Make `/today` a lightweight dashboard with placeholder cards:
   - today tasks
   - Piggy Fund
   - leaderboard
@@ -155,13 +155,13 @@ Do not merge these into one large UX change if we need real feedback in between.
 
 ### i18n
 
-- [ ] Add `apps/web/lib/i18n/locales/zh-CN.ts`.
-- [ ] Add `apps/web/lib/i18n/locales/en.ts`.
-- [ ] Add `apps/web/lib/i18n/useI18n.ts`.
-- [ ] Default to `zh-CN`.
-- [ ] Store selected locale in local storage.
-- [ ] Add language toggle in `/settings`.
-- [ ] Localize:
+- [x] Add `apps/web/lib/i18n/locales/zh-CN.ts`.
+- [x] Add `apps/web/lib/i18n/locales/en.ts`.
+- [x] Add `apps/web/lib/i18n/useI18n.tsx`.
+- [x] Default to `zh-CN`.
+- [x] Store selected locale in local storage.
+- [x] Add language toggle in `/settings`.
+- [x] Localize app shell and new route shell:
   - navigation
   - page titles
   - buttons
@@ -170,10 +170,10 @@ Do not merge these into one large UX change if we need real feedback in between.
 
 ### Verification
 
-- [ ] `pnpm typecheck`.
-- [ ] `pnpm --filter @piggy-days/web build`.
-- [ ] Desktop visual check.
-- [ ] Mobile visual check.
+- [x] `pnpm typecheck`.
+- [x] `pnpm --filter @piggy-days/web build`.
+- [x] Desktop visual check.
+- [x] Mobile visual check.
 - [ ] Wife can find Tasks, Kitchen, Farm, and Settings without explanation.
 
 ## Release 1B: Todo and Coin Data Model
@@ -357,12 +357,26 @@ Goal: make the farm richer after the task/checklist/fund loop is useful.
 
 Goal: add power features only after private daily use works.
 
+- [ ] Keep `docs/DEPLOYMENT_PLAN.md` current before provisioning AWS resources.
+- [ ] Confirm the local task -> CoinEvent -> fund -> leaderboard loop works before first AWS deployment.
+- [ ] Add root `.npmrc` for Amplify pnpm monorepo support.
+- [ ] Add `amplify.yml`.
+- [ ] Configure Amplify deployment for `apps/web`.
+- [ ] Add API Dockerfile built from the monorepo root.
+- [ ] Build and push API image to Amazon ECR.
+- [ ] Create App Runner service for `apps/api`.
+- [ ] Store `DATABASE_URL` and `FAMILY_API_TOKEN` in Secrets Manager.
+- [ ] Create RDS PostgreSQL with backups enabled.
+- [ ] Decide and document the first production Prisma migration path.
+- [ ] Restrict API CORS to the deployed web origin.
+- [ ] Add CloudWatch log review and basic alarms.
+- [ ] Add AWS Budget before real household data is stored.
 - [ ] Real supermarket cache and scraper.
 - [ ] Google Places facts for Explore.
 - [ ] OpenAI-assisted reviews and outing explanations.
 - [ ] Occasional AI piggy dialogue with deterministic fallback.
 - [ ] PWA manifest and icons.
-- [ ] AWS deployment.
+- [ ] AWS deployment smoke test.
 - [ ] CI/CD and production observability.
 
 ## Quality Baseline

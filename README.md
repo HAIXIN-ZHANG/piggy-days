@@ -51,6 +51,7 @@ Later:
 - `docs/DATA_MODEL.md`: Prisma model intent and next schema changes.
 - `docs/API_CONTRACT.md`: protected routes, planned endpoints, and response shapes.
 - `docs/TECH_STACK.md`: frontend, backend, i18n, database, testing, and deployment choices.
+- `docs/DEPLOYMENT_PLAN.md`: AWS deployment runbook, phases, security boundary, and checklist.
 - `docs/UX_TESTING_GUIDE.md`: small-slice iteration rules and wife-testing prompts.
 - `docs/PIGGY_FARM_GAME_DESIGN.md`: farm reward layer and later game roadmap.
 - `docs/AGENT_GUIDE.md`: collaboration rules for future agents.

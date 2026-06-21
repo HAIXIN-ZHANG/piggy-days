@@ -39,25 +39,25 @@ The checkpoint should make it easy to either continue discussing details or star
 
 Use this format:
 
-### 1. 已经做了什么
+### 1. What Has Already Been Done
 
 - Current relevant product state.
 - Existing code/prototypes/routes/docs.
 - What is already decided.
 
-### 2. 现在的需求是什么
+### 2. What The Current Requirement Is
 
 - Latest user requirement.
 - What changed compared with earlier assumptions.
 - Who the feature is for: me, wife, or both.
 
-### 3. 下一步建议做什么
+### 3. What The Next Recommended Slice Is
 
 - Smallest useful next slice.
 - Why this slice comes before other tempting work.
 - Feature maturity target: `route-only`, `prototype`, `beta`, or `active`.
 
-### 4. 要实现什么
+### 4. What Will Be Implemented
 
 - Route/screen/workflow touched.
 - User actions supported.
@@ -65,26 +65,26 @@ Use this format:
 - Data mode: mock, local state, or persisted.
 - Copy/i18n requirements.
 
-### 5. 这次不做什么
+### 5. What Is Out Of Scope This Time
 
 - Out-of-scope features.
 - Integrations to avoid.
 - Polish or data work to delay.
 
-### 6. 需要一起确认的细节
+### 6. Details To Confirm Together
 
 - Product questions.
 - UX copy questions.
 - Navigation/exposure questions.
 - Reward or data model questions.
 
-### 7. 做完怎么测试
+### 7. How To Test Afterward
 
 - Wife-test script.
 - Pass signals.
 - Friction signals.
 
-### 8. 你可以怎么选
+### 8. User Options
 
 - Continue discussing details.
 - Update docs/notes first.
@@ -188,14 +188,14 @@ Do not expose every route equally.
 Primary navigation is only for `active` features. Early suggested primary nav:
 
 ```txt
-今天 / 任务 / 基金 / 小猪 / 设置
+Today / Tasks / Fund / Piggy Home / Settings
 ```
 
 Secondary entries are for `prototype` or `beta` features:
 
 - Cards on `/today`.
 - Links in `/settings`.
-- Small "实验功能" section.
+- Small "Experiments" section.
 
 Hidden routes are fine for `route-only` and early `prototype` work:
 
@@ -304,12 +304,12 @@ Details to watch:
 - `/today` should feel like the daily home, not a marketing page.
 - Bottom navigation should be short and Chinese-first.
 - Route labels should be familiar:
-  - 今天
-  - 任务
-  - 基金
-  - 小猪
-  - 厨房
-  - 设置
+  - Today
+  - Tasks
+  - Fund
+  - Piggy Home
+  - Kitchen
+  - Settings
 - Avoid too many bottom-nav items at once on mobile.
 - Use secondary entry links for later routes such as Review, Memories, Shop.
 - Keep page titles smaller than hero text; this is a tool, not a landing page.
@@ -444,7 +444,7 @@ Details to watch:
 
 Wife test:
 
-- Ask her to enter "周末找个公园走走" and see if the checklist feels useful or silly.
+- Ask her to enter "Find a park for a weekend walk" and see if the checklist feels useful or silly.
 
 ### Kitchen
 

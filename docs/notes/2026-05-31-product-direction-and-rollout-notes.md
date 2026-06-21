@@ -75,7 +75,7 @@ Later route set:
 Primary navigation should start small:
 
 ```txt
-今天 / 任务 / 基金 / 小猪 / 设置
+Today / Tasks / Fund / Piggy Home / Settings
 ```
 
 Kitchen can exist at `/kitchen`, but should start as a secondary/prototype entry unless testing proves it belongs in primary navigation.
@@ -144,14 +144,14 @@ The assistant should not automatically start coding the next roadmap item when t
 
 Each pre-work checkpoint should be structured enough to continue discussion:
 
-1. 已经做了什么.
-2. 现在的需求是什么.
-3. 下一步建议做什么.
-4. 要实现什么.
-5. 这次不做什么.
-6. 需要一起确认的细节.
-7. 做完怎么测试.
-8. 用户可以选择继续讨论、更新文档、或开始实现.
+1. What has already been done.
+2. What the current requirement is.
+3. What the next recommended slice is.
+4. What will be implemented.
+5. What is out of scope this time.
+6. Details to confirm together.
+7. How to test afterward.
+8. User options: continue discussing, update docs/notes first, or start implementation.
 
 This keeps the project collaborative and avoids locking in unclear UX decisions too early.
 
@@ -256,7 +256,7 @@ Should feel:
 
 Potential Chinese label:
 
-- 本周小贡献
+- Small wins this week
 
 Avoid:
 
@@ -293,17 +293,17 @@ Start with templates, not AI or maps.
 
 Example input:
 
-- 周末找个公园走走
+- Find a park for a weekend walk
 
 Example checklist:
 
-- 选一个区域
-- 查开放时间
-- 准备水/外套
-- 到达后拍照
-- 走 30 分钟
-- 写一句感受
-- 完成 outing
+- Pick an area
+- Check opening hours
+- Prepare water or jackets
+- Take a photo after arriving
+- Walk for 30 minutes
+- Write one short note
+- Complete outing
 
 ### Review and Memory
 

@@ -49,11 +49,11 @@ Start with these routes:
 
 Primary navigation should start small:
 
-- 今天.
-- 任务.
-- 基金.
-- 小猪.
-- 设置.
+- Today.
+- Tasks.
+- Fund.
+- Piggy Home.
+- Settings.
 
 Routes can exist before they are primary navigation items. Kitchen can start as a secondary/prototype entry; Explore, Review, Memories, and Shop should stay hidden or secondary until they are useful enough for repeated use.
 
@@ -98,7 +98,7 @@ V1 does not need registration or login.
 V1 has two built-in household users:
 
 - Me.
-- Wife.
+- Wife, displayed as Piggy in the English UI and as the localized "little pig" nickname in the Chinese UI.
 
 The app should track:
 

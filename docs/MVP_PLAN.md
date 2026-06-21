@@ -33,7 +33,7 @@ Only `active` features belong in primary navigation. `prototype` and `beta` feat
 - Mobile-first bottom navigation.
 - Desktop-friendly layout.
 - `/` redirects to `/today`.
-- Primary nav starts small: 今天, 任务, 基金, 小猪, 设置.
+- Primary nav starts small: Today, Tasks, Fund, Piggy Home, Settings.
 - Kitchen can stay as a secondary/prototype entry until daily use proves it belongs in primary nav.
 
 #### Today
